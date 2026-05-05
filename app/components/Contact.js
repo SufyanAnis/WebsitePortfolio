@@ -1,40 +1,26 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-
 export default function Contact() {
-  const [submitted, setSubmitted] = useState(false)
-
-  useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('active')
-        }
-      })
-    }, { threshold: 0.1, rootMargin: '0px 0px -100px 0px' })
-
-    document.querySelectorAll('.reveal, .stagger-item').forEach(el => {
-      observer.observe(el)
-    })
-
-    return () => observer.disconnect()
-  }, [])
-
   const handleSubmit = (e) => {
     e.preventDefault()
-    alert('Thank you! We will contact you shortly.')
-    setSubmitted(true)
-    e.target.reset()
+    const form = e.target
+    const name = form.elements[0].value.trim()
+    const email = form.elements[1].value.trim()
+    const company = form.elements[2].value.trim()
+    const message = form.elements[3].value.trim()
+
+    const subject = `New project inquiry from ${name} (${company})`
+    const body = `Name: ${name}\nEmail: ${email}\nCompany: ${company}\n\n${message}`
+    window.location.href = `mailto:info@synexis.tech?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
   }
 
   return (
     <section id="contact">
       <div className="container">
         <div className="contact-section reveal">
-          <h2>Let's Build Something Intelligent</h2>
-          <p>Ready to transform your enterprise with cutting-edge technology? Let's discuss your project.</p>
-          
+          <h2>Let&apos;s Build Something Intelligent</h2>
+          <p>Ready to transform your enterprise with cutting-edge technology? Let&apos;s discuss your project.</p>
+
           <form className="contact-form" onSubmit={handleSubmit}>
             <div className="form-group">
               <input type="text" placeholder="Your Name" required />

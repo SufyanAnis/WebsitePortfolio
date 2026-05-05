@@ -1,6 +1,4 @@
-'use client'
-
-import { useEffect } from 'react'
+import Image from 'next/image'
 
 const solutions = [
   {
@@ -27,22 +25,6 @@ const solutions = [
 ]
 
 export default function Solutions() {
-  useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('active')
-        }
-      })
-    }, { threshold: 0.1, rootMargin: '0px 0px -100px 0px' })
-
-    document.querySelectorAll('.reveal, .stagger-item').forEach(el => {
-      observer.observe(el)
-    })
-
-    return () => observer.disconnect()
-  }, [])
-
   return (
     <section id="solutions" className="solutions-section">
       <div className="container">
@@ -57,7 +39,14 @@ export default function Solutions() {
         <div className="solutions-grid">
           {solutions.map((solution, index) => (
             <div key={index} className="solution-card stagger-item">
-              <img src={solution.image} alt={solution.title} className="solution-image" />
+              <Image
+                src={solution.image}
+                alt={solution.title}
+                width={800}
+                height={400}
+                className="solution-image"
+                sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 400px"
+              />
               <div className="solution-content">
                 <div className="solution-badge">{solution.badge}</div>
                 <h3>{solution.title}</h3>

@@ -1,4 +1,6 @@
 export default function Footer() {
+  const year = new Date().getFullYear()
+
   return (
     <footer>
       <div className="container">
@@ -37,12 +39,12 @@ export default function Footer() {
         </div>
         <div className="footer-bottom">
           <div className="footer-copyright">
-            &copy; 2024 Synexis Technologies. All rights reserved.
+            &copy; {year} Synexis Technologies. All rights reserved.
           </div>
           <div className="social-links">
-            <a href="#" className="social-link">in</a>
-            <a href="#" className="social-link">𝕏</a>
-            <a href="#" className="social-link">gh</a>
+            <a href="https://www.linkedin.com/company/synexis-technologies" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="social-link">in</a>
+            <a href="https://x.com/synexis_tech" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)" className="social-link">𝕏</a>
+            <a href="https://github.com/synexis-tech" target="_blank" rel="noopener noreferrer" aria-label="GitHub" className="social-link">gh</a>
           </div>
         </div>
       </div>

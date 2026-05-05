@@ -1,6 +1,4 @@
-'use client'
-
-import { useEffect } from 'react'
+import Image from 'next/image'
 
 const services = [
   {
@@ -105,22 +103,6 @@ const services = [
 ]
 
 export default function Services() {
-  useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('active')
-        }
-      })
-    }, { threshold: 0.1, rootMargin: '0px 0px -100px 0px' })
-
-    document.querySelectorAll('.reveal, .stagger-item').forEach(el => {
-      observer.observe(el)
-    })
-
-    return () => observer.disconnect()
-  }, [])
-
   return (
     <section id="services">
       <div className="container">
@@ -139,7 +121,7 @@ export default function Services() {
                 {service.icon === 'gradient' ? (
                   service.svg
                 ) : (
-                  <img src={service.src} alt={service.alt} style={service.imgStyle} />
+                  <Image src={service.src} alt={service.alt} width={48} height={48} style={service.imgStyle} unoptimized />
                 )}
               </div>
               <h3>{service.title}</h3>

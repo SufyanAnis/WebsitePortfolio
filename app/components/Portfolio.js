@@ -1,6 +1,4 @@
-'use client'
-
-import { useEffect } from 'react'
+import Image from 'next/image'
 
 const caseStudies = [
   {
@@ -36,22 +34,6 @@ const caseStudies = [
 ]
 
 export default function Portfolio() {
-  useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('active')
-        }
-      })
-    }, { threshold: 0.1, rootMargin: '0px 0px -100px 0px' })
-
-    document.querySelectorAll('.reveal, .stagger-item').forEach(el => {
-      observer.observe(el)
-    })
-
-    return () => observer.disconnect()
-  }, [])
-
   return (
     <section id="portfolio">
       <div className="container">
@@ -67,16 +49,16 @@ export default function Portfolio() {
           {caseStudies.map((study, index) => (
             <div key={index} className="case-study stagger-item">
               <div className="case-study-image">
-                <img src={study.image} alt={study.title} />
+                <Image src={study.image} alt={study.title} width={120} height={120} unoptimized />
               </div>
               <div className="case-study-content">
                 <div className="case-badge">{study.badge}</div>
                 <h3>{study.title}</h3>
                 <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
-                  {study.description.split('\n').map((line, i) => (
+                  {study.description.split('\n').map((line, i, arr) => (
                     <span key={i}>
                       {line}
-                      {i < study.description.split('\n').length - 1 && <br />}
+                      {i < arr.length - 1 && <br />}
                     </span>
                   ))}
                 </p>

@@ -6,7 +6,13 @@ import {
   useInView,
   useReducedMotion,
 } from "motion/react";
-import { ArrowUpRight, TrendingDown, TrendingUp, Sparkles } from "lucide-react";
+import {
+  ArrowUpRight,
+  TrendingDown,
+  TrendingUp,
+  Sparkles,
+  Play,
+} from "lucide-react";
 import { useRef, useState, type FormEvent } from "react";
 import { SplitText } from "@/components/animations/split-text";
 import { Typewriter } from "@/components/animations/typewriter";
@@ -14,13 +20,13 @@ import { NeuralNet } from "@/components/ai/neural-net";
 import { siteConfig } from "@/lib/site-config";
 
 /**
- * AiShowcase — split-screen demo. Left: chat-style prompt that
- * runs a canned analysis. Right: neural network visualization
- * with floating stat cards.
+ * AiShowcase — split-screen demo.
  *
- * The "AI" is scripted (no model call) — the point is to make the
- * agency's AI capability *feel* tangible. The sequence comes from
- * site-config so copy can be tuned without touching the component.
+ * Per QA report: section was flagged as decorative. It's actually
+ * interactive (typewriter on submit) but the affordance was easy
+ * to miss. Fix: prominent "Try a sample" button row above the
+ * input + a "Run" pill style on the submit button so the
+ * interactivity is unmissable.
  */
 export function AiShowcase() {
   const reduced = useReducedMotion();
@@ -48,13 +54,18 @@ export function AiShowcase() {
     setPrompt("");
   }
 
+  function handleSample(sample: string) {
+    setPrompt(sample);
+    setSubmitted(true);
+    setDoneStatus(false);
+  }
+
   return (
     <section
       id="ai-showcase"
       ref={ref}
       className="relative overflow-hidden bg-[var(--color-elevated)] px-6 py-32 lg:px-12 lg:py-44"
     >
-      {/* Background grid + grain */}
       <div
         aria-hidden
         className="absolute inset-0 opacity-[0.04]"
@@ -81,13 +92,34 @@ export function AiShowcase() {
               AI that works
             </span>
             <h2 className="text-display-m max-w-[16ch]">
-              <SplitText text={"Watch our AI\nagent in action."} />
+              <SplitText text={"Try our analysis\nagent yourself."} />
             </h2>
             <p className="text-body-l max-w-[520px] text-[var(--color-secondary)]">
-              We ship production agents wired into your stack — not chat toys.
-              Ask one a question, get evidence-backed answers and an audit trail.
+              Production agents wired into your stack, not chat toys. Ask one
+              a question below and watch it think, evidence its answer, and
+              show its sources.
             </p>
           </div>
+
+          {/* Sample prompt buttons — make interactivity obvious */}
+          {!submitted && (
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.18em] text-[var(--color-tertiary)]">
+                <Play size={11} fill="currentColor" />
+                Try a sample
+              </span>
+              {config.samplePrompts.map((sample) => (
+                <button
+                  key={sample}
+                  type="button"
+                  onClick={() => handleSample(sample)}
+                  className="rounded-full border border-[var(--color-border-default)] bg-[var(--color-base)]/60 px-3 py-1.5 text-[11px] text-[var(--color-secondary)] backdrop-blur-md transition-colors hover:border-[var(--color-accent)]/40 hover:text-[var(--color-primary)]"
+                >
+                  {sample.length > 38 ? sample.slice(0, 36) + "..." : sample}
+                </button>
+              ))}
+            </div>
+          )}
 
           <div className="rounded-2xl border border-[var(--color-border-default)] bg-[var(--color-base)]/70 p-5 backdrop-blur-sm">
             <form onSubmit={handleSubmit} className="flex items-center gap-3">
@@ -114,10 +146,10 @@ export function AiShowcase() {
               ) : (
                 <button
                   type="submit"
-                  className="inline-flex size-9 items-center justify-center rounded-full bg-[var(--color-accent)] text-white transition-transform hover:scale-[1.04] active:scale-[0.96]"
-                  aria-label="Run analysis"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-[var(--color-accent)] px-3.5 py-1.5 text-[12px] font-medium text-white transition-transform hover:scale-[1.04] active:scale-[0.96]"
                 >
-                  <ArrowUpRight size={16} />
+                  Run
+                  <ArrowUpRight size={13} />
                 </button>
               )}
             </form>
@@ -136,14 +168,17 @@ export function AiShowcase() {
                       lines={statusLines.map((s) => s.text)}
                       onComplete={() => setDoneStatus(true)}
                     />
-                    {doneStatus && result && (
-                      <ResultBlock result={result} />
-                    )}
+                    {doneStatus && result && <ResultBlock result={result} />}
                   </div>
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
+
+          <p className="text-[11px] text-[var(--color-tertiary)]">
+            Sample agent. Real engagements ship with audit logs, evaluations,
+            and your own data sources.
+          </p>
         </div>
 
         {/* RIGHT: neural network + floating stat cards */}
@@ -158,9 +193,6 @@ export function AiShowcase() {
           />
           <div className="relative h-full w-full">
             <NeuralNet />
-
-            {/* Floating stat cards — kept inside the column bounds.
-                Three cards: top-right, middle-left, bottom-right. */}
             {config.stats.map((s, i) => {
               const positions: Array<{
                 top: string;

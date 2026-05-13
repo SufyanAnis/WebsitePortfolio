@@ -6,12 +6,8 @@ import { useEffect, useState } from "react";
 import { SplitText } from "@/components/animations/split-text";
 import { Counter } from "@/components/animations/counter";
 import { Button } from "@/components/ui/button";
-import { siteConfig } from "@/lib/site-config";
+import { siteConfig, nextAvailableQuarter } from "@/lib/site-config";
 
-/**
- * Three.js scene — client-only. Skeleton while loading.
- * On mobile (<lg) we skip it and use a CSS gradient + grid only.
- */
 const HeroScene = dynamic(() => import("@/components/three/hero-scene"), {
   ssr: false,
   loading: () => null,
@@ -29,6 +25,7 @@ export function Hero() {
   const [wordIdx, setWordIdx] = useState(0);
   const [isDesktop, setIsDesktop] = useState(false);
   const cyclingWords = siteConfig.heroWords;
+  const availability = nextAvailableQuarter();
 
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 1024px)");
@@ -51,9 +48,7 @@ export function Hero() {
       id="hero"
       className="relative isolate flex min-h-[100svh] flex-col justify-between overflow-hidden px-6 pb-12 pt-28 lg:px-12 lg:pb-20 lg:pt-32"
     >
-      {/* Background — 3D scene desktop, gradient mobile */}
       <div className="absolute inset-0 -z-10">
-        {/* CSS fallback always present underneath */}
         <div
           aria-hidden
           className="absolute inset-0"
@@ -62,7 +57,6 @@ export function Hero() {
               "radial-gradient(ellipse at 50% 80%, rgba(26,107,255,0.12), transparent 55%), radial-gradient(ellipse at 80% 30%, rgba(59,130,246,0.06), transparent 60%)",
           }}
         />
-        {/* Faint grid */}
         <div
           aria-hidden
           className="absolute inset-0 opacity-[0.06]"
@@ -76,13 +70,11 @@ export function Hero() {
               "radial-gradient(ellipse at 50% 50%, black 30%, transparent 70%)",
           }}
         />
-        {/* 3D scene — desktop only */}
         {isDesktop && !reduced ? (
           <div className="absolute inset-0">
             <HeroScene />
           </div>
         ) : null}
-        {/* Bottom fade into next section */}
         <div
           aria-hidden
           className="absolute inset-x-0 bottom-0 h-32"
@@ -94,7 +86,7 @@ export function Hero() {
       </div>
 
       <div className="relative mx-auto flex w-full max-w-[var(--container-full)] flex-col gap-8 lg:gap-10">
-        {/* Availability badge */}
+        {/* Availability badge with dynamically computed quarter */}
         <motion.span
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
@@ -108,10 +100,9 @@ export function Hero() {
               className="absolute inset-0 size-1.5 animate-ping rounded-full bg-[var(--color-success)] opacity-60"
             />
           </span>
-          Available for Q3 projects
+          Available for {availability} projects
         </motion.span>
 
-        {/* Headline */}
         <h1 className="text-display-xl">
           <span className="block">
             <SplitText text={HEADLINE[0]} immediate delay={0.3} />
@@ -139,7 +130,6 @@ export function Hero() {
           </span>
         </h1>
 
-        {/* Subtitle + CTAs */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -155,12 +145,11 @@ export function Hero() {
               Start a Project
             </Button>
             <Button href="#portfolio" variant="ghost" icon="play">
-              Watch Reel
+              See our work
             </Button>
           </div>
         </motion.div>
 
-        {/* Stats row */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
@@ -184,9 +173,9 @@ export function Hero() {
         </motion.div>
       </div>
 
-      {/* Scroll indicator */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-6 flex flex-col items-center gap-2">
-        <span className="text-micro text-[var(--color-tertiary)]">Scroll</span>
+      {/* Scroll indicator: animated line only, no "Scroll" label
+          per QA report (vocabulary read as dated). */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-6 flex justify-center">
         <div className="relative h-10 w-px overflow-hidden bg-white/10">
           <motion.div
             className="absolute inset-x-0 top-0 h-full bg-white"
@@ -210,16 +199,6 @@ interface CyclingWordProps {
   reduced: boolean;
 }
 
-/**
- * CyclingWord — grid-stack layout. The invisible "longest" word
- * reserves width via the grid cell, the visible AnimatePresence
- * child renders over it. Both occupy the same grid area so the
- * line never shifts when words change length.
- *
- * Vertical slide + blur on enter/exit, `mode="wait"` so the
- * outgoing word fully exits before the next one enters — cleaner
- * than overlapping pops at this font size.
- */
 function CyclingWord({ words, index, reduced }: CyclingWordProps) {
   const longest = words.reduce((a, b) => (a.length > b.length ? a : b));
   return (
@@ -231,17 +210,10 @@ function CyclingWord({ words, index, reduced }: CyclingWordProps) {
         paddingBottom: "0.08em",
       }}
     >
-      <span
-        aria-hidden
-        className="invisible"
-        style={{ gridArea: "stack" }}
-      >
+      <span aria-hidden className="invisible" style={{ gridArea: "stack" }}>
         {longest}
       </span>
-      <span
-        className="relative inline-block"
-        style={{ gridArea: "stack" }}
-      >
+      <span className="relative inline-block" style={{ gridArea: "stack" }}>
         <AnimatePresence mode="wait">
           <motion.span
             key={words[index]}

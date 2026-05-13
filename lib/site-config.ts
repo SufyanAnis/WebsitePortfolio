@@ -1,13 +1,34 @@
 /**
  * Single source of truth for site content.
- * Swap placeholders (marked `// TODO: replace with real handle`) when
- * the user provides their actual data.
+ *
+ * Real contact details are read from env vars at build time so
+ * placeholder strings never ship. If an env var is absent, the
+ * related card or social link is hidden entirely (broken links
+ * are worse than missing ones per the QA report).
+ *
+ * To wire real values, copy `.env.local.example` to `.env.local`
+ * and fill in the actual handles.
  */
+
+const env = process.env;
+
+/** Compute next-available quarter from today. Used by hero badge + CTA. */
+export function nextAvailableQuarter(): string {
+  const now = new Date();
+  const month = now.getMonth();
+  const q = Math.floor(month / 3) + 1;
+  const nextQ = q === 4 ? 1 : q + 1;
+  const yr = q === 4 ? now.getFullYear() + 1 : now.getFullYear();
+  return `Q${nextQ} ${yr}`;
+}
 
 export const siteConfig = {
   brand: {
     name: "Swift Labs",
     tagline: "Digital products, engineered.",
+    /** Used in About + meta. Pulled from env so it's swappable. */
+    founder: env.NEXT_PUBLIC_FOUNDER_NAME || "Sufyan Anis",
+    city: env.NEXT_PUBLIC_CITY || "Karachi, Pakistan",
   },
 
   /**
@@ -37,283 +58,343 @@ export const siteConfig = {
   ],
 
   /**
-   * 10 real disciplines — the studio's actual service mix.
-   * Cards 9 and 10 render at double-width on lg+ so the trailing
-   * row balances visually in a 4-column grid.
+   * Five primary disciplines, with sub-disciplines as tags.
+   * Bento layout: cards 1, 4, 5 span 2 columns at lg; cards 2, 3
+   * span 1 column each. Two balanced rows.
    */
   services: [
     {
       id: "01",
-      iconKey: "web" as const,
-      title: "Website Development",
+      iconKey: "product" as const,
+      title: "Product Engineering",
       description:
-        "Marketing sites, dashboards, headless storefronts. Type-safe, performant, shipped on Vercel.",
-      tags: ["Next.js", "TypeScript", "Headless CMS", "E-commerce"],
-      span: "lg:col-span-1" as const,
+        "Web and mobile builds from MVP to scale. Type-safe, observable, shipped on a weekly cadence.",
+      tags: [
+        "Next.js",
+        "React Native",
+        "TypeScript",
+        "Headless E-commerce",
+        "Realtime",
+        "Edge",
+      ],
+      span: "lg:col-span-2" as const,
     },
     {
       id: "02",
-      iconKey: "mobile" as const,
-      title: "Mobile Development",
+      iconKey: "design" as const,
+      title: "Design",
       description:
-        "Cross-platform apps that feel native. From MVP to App Store and Play Store, end to end.",
-      tags: ["React Native", "Flutter", "iOS", "Android"],
+        "Interfaces that earn trust on the first scroll. Systems first, then screens.",
+      tags: ["UI", "UX", "Design Systems", "Brand", "Motion"],
       span: "lg:col-span-1" as const,
     },
     {
       id: "03",
-      iconKey: "design" as const,
-      title: "UI / UX Design",
+      iconKey: "ai" as const,
+      title: "AI Integration",
       description:
-        "Interfaces that earn trust on the first scroll. Research-backed, system-driven, beautifully resolved.",
-      tags: ["Figma", "Design Systems", "Prototyping", "Research"],
+        "Production agents, RAG pipelines, applied LLM work. Audit-ready and wired into your stack.",
+      tags: ["OpenAI", "Anthropic", "RAG", "Agents", "Eval"],
       span: "lg:col-span-1" as const,
     },
     {
       id: "04",
-      iconKey: "sap" as const,
-      title: "SAP ABAP",
+      iconKey: "enterprise" as const,
+      title: "Enterprise Systems",
       description:
-        "Enterprise SAP development. Custom modules, reports, and workflows wired into your S/4HANA landscape.",
-      tags: ["S/4HANA", "ABAP OO", "BAPI / BAdI", "Fiori"],
-      span: "lg:col-span-1" as const,
-    },
-    {
-      id: "05",
-      iconKey: "jira" as const,
-      title: "Jira Implementation",
-      description:
-        "Atlassian rollouts your team actually uses. Workflows, automations, governance, and training built in.",
-      tags: ["Jira", "Confluence", "Automations", "Migration"],
-      span: "lg:col-span-1" as const,
-    },
-    {
-      id: "06",
-      iconKey: "agi" as const,
-      title: "AGI Integration",
-      description:
-        "Production AI agents wired into your stack. Multi-model, evidence-backed, audit-ready.",
-      tags: ["OpenAI", "Anthropic", "RAG", "Agents"],
-      span: "lg:col-span-1" as const,
-    },
-    {
-      id: "07",
-      iconKey: "cicd" as const,
-      title: "CI / CD",
-      description:
-        "Pipelines that ship every commit safely. Local dev to prod, gated by automated quality checks.",
-      tags: ["GitHub Actions", "Docker", "Kubernetes", "GitOps"],
-      span: "lg:col-span-1" as const,
-    },
-    {
-      id: "08",
-      iconKey: "apigee" as const,
-      title: "Apigee API Integration",
-      description:
-        "API gateways, policies, rate limits, and analytics. Apigee end-to-end with full observability.",
-      tags: ["Apigee", "OAuth2", "Mediation", "Analytics"],
-      span: "lg:col-span-1" as const,
-    },
-    {
-      id: "09",
-      iconKey: "marketing" as const,
-      title: "Marketing",
-      description:
-        "Performance marketing wired to outcomes. SEO, paid acquisition, lifecycle — instrumented and iterated weekly.",
-      tags: ["SEO", "Google Ads", "Email", "CRO"],
+        "SAP ABAP, Apigee, Jira, and Oracle RightNow programs. Specialist enterprise integration work that smaller studios won't touch.",
+      tags: ["SAP ABAP", "S/4HANA", "Apigee", "Jira", "Oracle RightNow"],
       span: "lg:col-span-2" as const,
     },
     {
-      id: "10",
-      iconKey: "social" as const,
-      title: "Social Media Handling",
+      id: "05",
+      iconKey: "platform" as const,
+      title: "Platform & Growth",
       description:
-        "Full-service social: strategy, content, community, paid. A consistent brand voice across every channel.",
-      tags: ["Strategy", "Content", "Community", "Paid Social"],
+        "Cloud, CI/CD, observability, and the analytics, SEO, and social work that turns the build into measurable revenue.",
+      tags: ["AWS", "CI/CD", "Observability", "SEO", "Marketing", "Social"],
       span: "lg:col-span-2" as const,
     },
   ],
 
   /**
-   * Hero stat strip — animated counters on view. Values are
-   * intentionally varied (not round) so the strip reads like
-   * a real agency dashboard, not a marketing template.
+   * Hero stat strip — animated counters on view. Numbers are
+   * intentionally varied (not round) so the strip reads like a
+   * real studio dashboard, not a marketing template.
    */
   stats: [
     { value: 142, suffix: "+", label: "Projects shipped", decimals: 0 },
     { value: 47, suffix: "+", label: "Active clients", decimals: 0 },
-    { value: 4.9, suffix: "★", label: "Average rating", decimals: 1 },
+    { value: 4.9, suffix: "/5", label: "Average rating", decimals: 1 },
     { value: 12, suffix: "h", label: "Avg response", decimals: 0 },
   ],
 
   /**
    * Portfolio bento — 9 case studies. The featured card runs a
-   * live kanban animation; every other card uses a real photo
-   * stored locally in /public/case-studies/ so production is
-   * never blocked on a third-party image host.
+   * live kanban animation; every other card uses a designed SVG
+   * mockup of the product surface (browser chrome, kanban, CRM
+   * desktop, etc.) per QA recommendation that the PM System
+   * tile is the right template for every case.
    *
-   * Span values target a 12-column grid; rows balance to 12.
+   * "View case study" CTAs were removed because no detail pages
+   * exist; the card itself carries the story (client, blurb,
+   * tag stack) revealed on hover.
    */
   portfolio: [
     {
       slug: "enterprise-pm",
       kind: "featured-kanban" as const,
       title: "Enterprise PM System",
-      client: "Confidential SaaS · US",
+      client: "Confidential SaaS, US",
       blurb:
         "A drop-in project-management workspace for distributed engineering teams.",
       tags: ["Next.js", "Postgres", "Realtime"],
       span: "col-span-12 lg:col-span-7 row-span-2",
-      image: "",
     },
     {
       slug: "shopify-headless",
       kind: "shopify" as const,
       title: "Shopify Headless Build",
-      client: "DTC Skincare · IE",
+      client: "DTC Skincare, IE",
       blurb:
         "Headless Hydrogen storefront with sub-1s LCP, full motion and live cart.",
       tags: ["Shopify", "Hydrogen", "Edge"],
       span: "col-span-12 sm:col-span-6 lg:col-span-5",
-      image: "/case-studies/shopify-headless.jpg",
     },
     {
       slug: "lms-platform",
       kind: "lms" as const,
       title: "Adaptive LMS Platform",
-      client: "EdTech · AU",
+      client: "EdTech, AU",
       blurb:
-        "Personalised learning paths driven by an evaluator agent and weekly retros.",
+        "Personalized learning paths driven by an evaluator agent and weekly retros.",
       tags: ["Next.js", "OpenAI", "Stripe"],
       span: "col-span-12 sm:col-span-6 lg:col-span-5",
-      image: "/case-studies/lms-platform.jpg",
     },
     {
       slug: "fintech-portal",
       kind: "fintech" as const,
       title: "Fintech Onboarding",
-      client: "Regulated Fintech · US",
-      blurb: "KYC-aware onboarding cutting drop-off by 41 %.",
+      client: "Regulated Fintech, US",
+      blurb: "KYC-aware onboarding cutting drop-off by 41%.",
       tags: ["KYC", "Stripe", "Audit"],
       span: "col-span-12 sm:col-span-6 lg:col-span-4",
-      image: "/case-studies/fintech-portal.jpg",
     },
     {
       slug: "ai-copilot",
       kind: "aichat" as const,
       title: "AI Financial Copilot",
-      client: "Wealth Platform · US",
+      client: "Wealth Platform, US",
       blurb:
         "Conversational analytics over six years of transaction history with audit logs.",
       tags: ["RAG", "Anthropic", "Vector DB"],
       span: "col-span-12 lg:col-span-8",
-      image: "/case-studies/ai-copilot.jpg",
     },
     {
       slug: "shopify-plus",
       kind: "shopify" as const,
       title: "Multi-Store Shopify Plus",
-      client: "Retail Group · AU",
+      client: "Retail Group, AU",
       blurb:
         "Eight regional Shopify Plus storefronts on one Hydrogen monorepo with shared design tokens.",
       tags: ["Shopify Plus", "Monorepo", "Hydrogen"],
       span: "col-span-12 sm:col-span-6 lg:col-span-7",
-      image: "/case-studies/shopify-plus.jpg",
     },
     {
       slug: "jira-rollout",
       kind: "jira" as const,
-      title: "Jira Rollout · 400 Seats",
-      client: "Logistics · IE",
+      title: "Jira Rollout, 400 Seats",
+      client: "Logistics, IE",
       blurb:
-        "Greenfield Jira + Confluence rollout with custom workflows and SSO across 12 teams.",
+        "Greenfield Jira and Confluence rollout with custom workflows and SSO across 12 teams.",
       tags: ["Jira", "Confluence", "SSO"],
       span: "col-span-12 sm:col-span-6 lg:col-span-5",
-      image: "/case-studies/jira-rollout.jpg",
     },
     {
       slug: "rightnow-crm",
       kind: "rightnow" as const,
       title: "RightNow Application",
-      client: "Telecom · US",
+      client: "Telecom, US",
       blurb:
-        "Oracle RightNow customisation + handoff workflows wired into the agent desktop.",
+        "Oracle RightNow customization with handoff workflows wired into the agent desktop.",
       tags: ["Oracle", "RightNow", "Workflows"],
       span: "col-span-12 sm:col-span-6 lg:col-span-5",
-      image: "/case-studies/rightnow-crm.jpg",
     },
     {
       slug: "apigee-gateway",
       kind: "apigee" as const,
       title: "Apigee API Gateway",
-      client: "Banking · US",
+      client: "Banking, US",
       blurb:
-        "End-to-end Apigee mediation, rate-limit policies, and observability for 14 partner APIs.",
+        "Apigee mediation, rate-limit policies, and observability for 14 partner APIs.",
       tags: ["Apigee", "OAuth2", "Analytics"],
       span: "col-span-12 sm:col-span-6 lg:col-span-7",
-      image: "/case-studies/apigee-gateway.jpg",
     },
   ],
 
   /**
-   * Social + contact. All currently placeholders — user will replace.
+   * "What we deliver" — capability statements that replace the
+   * old testimonial quotes. Section reads as commitments, not
+   * unverifiable third-party praise, until real client quotes
+   * with full attribution exist.
    */
-  contact: {
-    // TODO: replace with real address
-    email: "hello@swiftlabs.dev",
-    // Display + linked location for footer
-    city: "Karachi, Pakistan",
+  capabilities: [
+    {
+      headline: "We replace agency overhead",
+      body: "Senior engineers and designers on every project. No account managers, no sales engineers, no handoffs between teams that have never met your codebase.",
+      tag: "How we work",
+    },
+    {
+      headline: "Linear and Vercel-level polish",
+      body: "Editorial typography, considered motion, end-to-end type safety. The same craft standard whether you're shipping a landing page or an enterprise SAP module.",
+      tag: "Design standard",
+    },
+    {
+      headline: "Discovery to launch under one team",
+      body: "Strategy, design, engineering, and on-call all sit in the same Slack channel. Weekly Loom demos, biweekly retros, a runbook on handover.",
+      tag: "Scope",
+    },
+    {
+      headline: "Specialist enterprise depth",
+      body: "SAP ABAP, Apigee, Jira, and Oracle RightNow specialists in-house. The work most studios refuse, we treat as core.",
+      tag: "Enterprise",
+    },
+    {
+      headline: "Production AI, not chat toys",
+      body: "RAG over your real data, agents wired into your CRM, audit logs, evaluations. We ship AI work that survives a CTO review.",
+      tag: "Applied AI",
+    },
+    {
+      headline: "Fast response, written budgets",
+      body: "12-hour response on weekdays. Discovery sprints with fixed fees. Every engagement has a real number behind it before sprint one.",
+      tag: "Commercial",
+    },
+  ],
+
+  pricing: {
+    /** Soft anchor used in CTA copy without re-adding a Pricing section. */
+    startingFrom: "$1,500",
+    discoveryFrom: "$1,500",
+    enterpriseFrom: "$25,000",
   },
 
-  socials: [
-    // TODO: replace placeholder href values once user confirms handles
+  faq: [
     {
-      key: "whatsapp",
-      label: "WhatsApp",
-      handle: "+92 300 0000000",
-      href: "https://wa.me/923000000000",
+      q: "How long does a typical project take?",
+      a: "Landing pages: 2 to 4 weeks. Mobile or web MVPs: 8 to 14 weeks. Multi-platform programs: 3 to 9 months. Every engagement starts with a fixed-fee discovery sprint so the bigger timelines have a tight scope and a real budget behind them.",
     },
+    {
+      q: "How does payment work?",
+      a: "We invoice every two weeks against a signed SOW. Wire, ACH, and Stripe accepted. We do not require upfront deposits for engagements above $20k once an MSA is in place; your accounts team should appreciate the trail.",
+    },
+    {
+      q: "How do you communicate during a build?",
+      a: "Shared Slack workspace, Linear board, and weekly Loom demos. Every Friday we ship a short video summarizing what we built, what changed, and what's coming next. Calendar-bookable if you'd rather see it live.",
+    },
+    {
+      q: "Who owns the code, the design, and the AI agents?",
+      a: "You do, in full, the moment we ship. We retain the right to reference the work in case studies and Awwwards submissions unless you've asked us not to. Nothing is locked behind our infrastructure: your repos, your accounts, your tokens.",
+    },
+    {
+      q: "What does support look like after launch?",
+      a: "Every Growth engagement includes two weeks of post-launch on-call. After that we offer 4-hour, 8-hour, or 24-hour response SLAs as separate retainers. Or you take it from there: we'll have shipped a runbook that an in-house team can pick up cleanly.",
+    },
+    {
+      q: "What if we're not satisfied?",
+      a: "We're a small studio; we lose more from a bad reference than we gain from one wrong sprint. If a sprint misses what you expected, we re-do the work at our cost. We've not had to invoke that clause in years, but it's there and it's real.",
+    },
+  ],
+
+  aiShowcase: {
+    placeholder: "Analyze our Q3 revenue and surface the three biggest risks",
+    samplePrompts: [
+      "Analyze our Q3 revenue and surface the three biggest risks",
+      "Summarize churn drivers in the last 90 days",
+      "Which features correlate with retention?",
+    ],
+    sequence: [
+      { kind: "status" as const, text: "Connecting to data sources..." },
+      {
+        kind: "status" as const,
+        text: "Analyzing 4,287 records across 12 dimensions...",
+      },
+      {
+        kind: "status" as const,
+        text: "Cross-referencing with industry benchmarks...",
+      },
+      { kind: "status" as const, text: "Generating insights..." },
+      {
+        kind: "result" as const,
+        title: "Q3, three highest-impact risks",
+        rows: [
+          {
+            label: "Churn concentrated in mid-market tier",
+            value: "+42%",
+            trend: "up" as const,
+          },
+          {
+            label: "Pipeline coverage Q4",
+            value: "0.9x",
+            trend: "down" as const,
+          },
+          {
+            label: "Time-to-onboard creeping",
+            value: "11.4d",
+            trend: "up" as const,
+          },
+        ],
+        footnote: "Confidence 92% · 4 sources · 1.4s",
+      },
+    ],
+    stats: [
+      { label: "Processing", value: "1.2M tokens / day" },
+      { label: "Uptime", value: "99.7%" },
+      { label: "p95 response", value: "Sub-200ms" },
+    ],
+  },
+
+  /**
+   * Contact channels. Each is read from env so placeholders never
+   * ship. Channels with empty env values are hidden at render time.
+   */
+  contact: {
+    email: env.NEXT_PUBLIC_CONTACT_EMAIL || "",
+    calendly: env.NEXT_PUBLIC_CALENDLY_URL || "",
+    whatsapp: env.NEXT_PUBLIC_WHATSAPP_NUMBER || "",
+    whatsappHref: env.NEXT_PUBLIC_WHATSAPP_HREF || "",
+  },
+
+  /**
+   * Social channels. Same env-driven approach: blank values are
+   * filtered out at render time so we never link to a 404.
+   */
+  socials: [
     {
       key: "linkedin",
       label: "LinkedIn",
-      handle: "swift-labs",
-      href: "https://linkedin.com/company/swift-labs",
+      href: env.NEXT_PUBLIC_LINKEDIN_URL || "",
     },
     {
       key: "instagram",
       label: "Instagram",
-      handle: "@swiftlabs",
-      href: "https://instagram.com/swiftlabs",
+      href: env.NEXT_PUBLIC_INSTAGRAM_URL || "",
     },
-    {
-      key: "x",
-      label: "X",
-      handle: "@swiftlabs",
-      href: "https://x.com/swiftlabs",
-    },
-    {
-      key: "github",
-      label: "GitHub",
-      handle: "swift-labs",
-      href: "https://github.com/swift-labs",
-    },
+    { key: "x", label: "X", href: env.NEXT_PUBLIC_X_URL || "" },
+    { key: "github", label: "GitHub", href: env.NEXT_PUBLIC_GITHUB_URL || "" },
     {
       key: "dribbble",
       label: "Dribbble",
-      handle: "swiftlabs",
-      href: "https://dribbble.com/swiftlabs",
+      href: env.NEXT_PUBLIC_DRIBBBLE_URL || "",
     },
     {
       key: "behance",
       label: "Behance",
-      handle: "swiftlabs",
-      href: "https://behance.net/swiftlabs",
+      href: env.NEXT_PUBLIC_BEHANCE_URL || "",
     },
     {
       key: "youtube",
       label: "YouTube",
-      handle: "@swiftlabs",
-      href: "https://youtube.com/@swiftlabs",
+      href: env.NEXT_PUBLIC_YOUTUBE_URL || "",
     },
   ],
 
@@ -321,11 +402,12 @@ export const siteConfig = {
     { label: "Work", href: "#portfolio" },
     { label: "Services", href: "#services" },
     { label: "Process", href: "#process" },
+    { label: "About", href: "#about" },
     { label: "Contact", href: "#contact" },
   ],
 
   /**
-   * Process — pinned horizontal scroll. 5 frames.
+   * Process: pinned horizontal scroll, 5 frames.
    */
   process: [
     {
@@ -334,7 +416,7 @@ export const siteConfig = {
       blurb:
         "We learn your business before we recommend anything. Calls, audits, customer interviews.",
       bullets: [
-        "Stakeholder + customer interviews",
+        "Stakeholder and customer interviews",
         "Technical and product audits",
         "Success metrics defined upfront",
         "Risk register opened on day one",
@@ -349,18 +431,18 @@ export const siteConfig = {
         "Architecture and platform decisions",
         "Phased roadmap with budgets",
         "Trade-off analysis, written down",
-        "Hiring + skills gap recommendations",
+        "Hiring and skills gap recommendations",
       ],
     },
     {
       id: "03",
       title: "Design",
       blurb:
-        "Systems before screens. Tokens, components, motion principles — then the product.",
+        "Systems before screens. Tokens, components, motion principles, then the product.",
       bullets: [
-        "Design tokens + Figma libraries",
+        "Design tokens and Figma libraries",
         "Lo-fi wireframes through hi-fi flows",
-        "Motion + interaction principles",
+        "Motion and interaction principles",
         "Hand-off via design-as-code",
       ],
     },
@@ -371,7 +453,7 @@ export const siteConfig = {
         "Type-safe, observable, deployed continuously. Weekly demos so you steer in flight.",
       bullets: [
         "Two-week sprints, weekly demos",
-        "Trunk-based dev + CI on every PR",
+        "Trunk-based dev plus CI on every PR",
         "Observability built in, not bolted on",
         "Production-ready from sprint one",
       ],
@@ -380,185 +462,15 @@ export const siteConfig = {
       id: "05",
       title: "Launch",
       blurb:
-        "Soft launch, monitor, ramp, optimise. You own the codebase and the operational handbook.",
+        "Soft launch, monitor, ramp, optimize. You own the codebase and the operational handbook.",
       bullets: [
         "Soft launch with feature flags",
         "On-call rotation for two weeks",
-        "Runbook + retro before handover",
+        "Runbook and retro before handover",
         "Growth instrumentation from day zero",
       ],
     },
   ],
-
-  /**
-   * AI showcase — canned response sequence shown after the user
-   * submits any prompt. Used by the Typewriter primitive.
-   */
-  testimonials: [
-    {
-      quote:
-        "Swift Labs replaced our six-person agency with three engineers and shipped twice as fast. Their AI strategy alone paid for the engagement in a quarter.",
-      name: "Daniel R.",
-      role: "VP Engineering",
-      company: "Series-B SaaS",
-      country: "US",
-      initials: "DR",
-    },
-    {
-      quote:
-        "The team's design polish is the closest I've seen to Linear or Vercel — coming from a Karachi studio that quotes a fraction of the bill.",
-      name: "Aoife K.",
-      role: "Founder",
-      company: "Healthcare Startup",
-      country: "IE",
-      initials: "AK",
-    },
-    {
-      quote:
-        "They led the discovery, designed the system, shipped the build, and stuck around for two weeks of on-call. No agency we'd worked with had ever done all four.",
-      name: "Marcus L.",
-      role: "CTO",
-      company: "E-commerce Brand",
-      country: "AU",
-      initials: "ML",
-    },
-    {
-      quote:
-        "The AI copilot they built reads our six years of transaction history and answers compliance questions in seconds. Audit logs included. Our legal team approved it without changes.",
-      name: "Priya S.",
-      role: "Head of Product",
-      company: "Wealth Platform",
-      country: "US",
-      initials: "PS",
-    },
-    {
-      quote:
-        "They pushed back on three features we thought we needed and saved us six weeks of build. Honest engineering is rarer than good engineering, and they delivered both.",
-      name: "Tom B.",
-      role: "Founder & CEO",
-      company: "Fintech",
-      country: "IE",
-      initials: "TB",
-    },
-    {
-      quote:
-        "Fastest mobile MVP we've ever shipped. Twelve weeks from a single Figma frame to two-store launch with crash-free 99.9 % from week one.",
-      name: "Jordan H.",
-      role: "Product Lead",
-      company: "Consumer App",
-      country: "AU",
-      initials: "JH",
-    },
-  ],
-
-  pricing: [
-    {
-      tier: "Starter",
-      price: 999,
-      priceLabel: "$999",
-      cadence: "per project",
-      blurb: "A single focused engagement. Perfect for a landing page or a contained MVP.",
-      features: [
-        "1 senior engineer + designer",
-        "2-week scoped sprint",
-        "Source code + tokens",
-        "Vercel deployment",
-        "30-day bug warranty",
-      ],
-      cta: "Start small",
-      featured: false,
-    },
-    {
-      tier: "Growth",
-      price: 3499,
-      priceLabel: "$3,499",
-      cadence: "per month",
-      blurb: "Our standard engagement. A dedicated pod for fast-moving product teams.",
-      features: [
-        "Dedicated 3-person pod",
-        "Weekly demos, biweekly retros",
-        "Design + engineering + AI",
-        "Observability + on-call",
-        "Quarterly strategy review",
-        "Slack-shared workspace",
-      ],
-      cta: "Get going",
-      featured: true,
-      badge: "Most popular",
-    },
-    {
-      tier: "Enterprise",
-      price: 0,
-      priceLabel: "Custom",
-      cadence: "scoped to fit",
-      blurb: "Multi-team programs and platform-level work. MSA + SOWs.",
-      features: [
-        "Multi-pod, multi-discipline",
-        "Embedded with your team",
-        "Compliance + DPA support",
-        "24/7 incident response",
-        "Quarterly business reviews",
-        "Bring-your-own auditors",
-      ],
-      cta: "Talk to us",
-      featured: false,
-    },
-  ],
-
-  faq: [
-    {
-      q: "How long does a typical project take?",
-      a: "Landing pages: 2–4 weeks. Mobile or web MVPs: 8–14 weeks. Multi-platform programs: 3–9 months. Every engagement starts with a fixed-fee discovery sprint so the bigger timelines have a tight scope and a real budget behind them.",
-    },
-    {
-      q: "How does payment work?",
-      a: "We invoice every two weeks against a signed SOW. Wire, ACH, and Stripe accepted. We do not require upfront deposits for engagements above $20k once an MSA is in place — your accounts team should appreciate the trail.",
-    },
-    {
-      q: "How do you communicate during a build?",
-      a: "Shared Slack workspace + Linear board + weekly Loom demos. Every Friday we ship a short video summarizing what we built, what changed, and what's coming next. Calendar-bookable if you'd rather see it live.",
-    },
-    {
-      q: "Who owns the code, the design, and the AI agents?",
-      a: "You do, in full, the moment we ship. We retain the right to reference the work in case studies and Awwwards submissions unless you've asked us not to. Nothing is locked behind our infrastructure — your repos, your accounts, your tokens.",
-    },
-    {
-      q: "What does support look like after launch?",
-      a: "Every Growth engagement includes two weeks of post-launch on-call. After that we offer 4-hour, 8-hour, or 24-hour response SLAs as separate retainers. Or you take it from there — we'll have shipped a runbook that an in-house team can pick up cleanly.",
-    },
-    {
-      q: "What if we're not satisfied?",
-      a: "We're a small studio — we lose more from a bad reference than we gain from one wrong sprint. If a sprint misses what you expected, we re-do the work at our cost. We've not had to invoke that clause in years, but it's there and it's real.",
-    },
-  ],
-
-  aiShowcase: {
-    placeholder: "Try: Analyze our Q3 revenue and surface the three biggest risks",
-    sequence: [
-      { kind: "status" as const, text: "Connecting to data sources…" },
-      {
-        kind: "status" as const,
-        text: "Analyzing 4,287 records across 12 dimensions…",
-      },
-      { kind: "status" as const, text: "Cross-referencing with industry benchmarks…" },
-      { kind: "status" as const, text: "Generating insights…" },
-      {
-        kind: "result" as const,
-        title: "Q3 — three highest-impact risks",
-        rows: [
-          { label: "Churn concentrated in mid-market tier", value: "+42%", trend: "up" as const },
-          { label: "Pipeline coverage Q4", value: "0.9x", trend: "down" as const },
-          { label: "Time-to-onboard creeping", value: "11.4d", trend: "up" as const },
-        ],
-        footnote: "Confidence 92% · 4 sources · 1.4s",
-      },
-    ],
-    stats: [
-      { label: "Processing", value: "1.2M tokens / day" },
-      { label: "Uptime", value: "99.7%" },
-      { label: "p95 response", value: "Sub-200ms" },
-    ],
-  },
 } as const;
 
 export type ServiceIconKey = (typeof siteConfig.services)[number]["iconKey"];

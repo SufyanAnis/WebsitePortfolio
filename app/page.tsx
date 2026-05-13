@@ -5,6 +5,7 @@ import { Services } from "@/components/sections/services";
 import { Process } from "@/components/sections/process";
 import { Portfolio } from "@/components/sections/portfolio";
 import { AiShowcase } from "@/components/sections/ai-showcase";
+import { About } from "@/components/sections/about";
 import { Testimonials } from "@/components/sections/testimonials";
 import { Faq } from "@/components/sections/faq";
 import { Cta } from "@/components/sections/cta";
@@ -21,6 +22,7 @@ export default function HomePage() {
         <Process />
         <Portfolio />
         <AiShowcase />
+        <About />
         <Testimonials />
         <Faq />
         <Cta />

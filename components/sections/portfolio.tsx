@@ -1,7 +1,6 @@
 "use client";
 
 import { motion, useMotionValue, useSpring, useReducedMotion } from "motion/react";
-import { ArrowUpRight } from "lucide-react";
 import { useRef, type MouseEvent, type ReactNode } from "react";
 import { ScrollReveal, revealChild } from "@/components/animations/scroll-reveal";
 import { SplitText } from "@/components/animations/split-text";
@@ -10,13 +9,12 @@ import { CaseVisual, type CaseKind } from "@/components/portfolio/case-visual";
 import { siteConfig } from "@/lib/site-config";
 
 /**
- * Portfolio — asymmetric bento. Featured card has the LiveKanban
- * widget inside it. All other cards are visual-only with the
- * project metadata, tags, and a hover state revealing "View case
- * study →".
+ * Portfolio — asymmetric bento. Featured card runs a live kanban;
+ * other cards use designed SVG mockups of the product surface.
  *
- * Each card uses a 3D tilt that tracks the cursor (max ~8°). Tilt
- * gracefully degrades to nothing under reduced-motion.
+ * Per QA report: "View case study" CTAs were removed because no
+ * detail pages exist. The card visual, client tag, blurb, and
+ * tag stack carry the story on hover.
  */
 export function Portfolio() {
   return (
@@ -35,8 +33,8 @@ export function Portfolio() {
             </h2>
           </div>
           <p className="text-body-l max-w-[420px] text-[var(--color-secondary)]">
-            A handful of recent client builds across SaaS, fintech, e-commerce
-            and AI. More on request — some still live behind NDA.
+            A handful of recent client builds across SaaS, fintech,
+            e-commerce, and AI. More on request; some still live behind NDA.
           </p>
         </div>
 
@@ -44,10 +42,6 @@ export function Portfolio() {
           <div className="grid grid-cols-12 gap-4">
             {siteConfig.portfolio.map((item) => {
               const isFeatured = item.kind === "featured-kanban";
-              // Featured kanban card skips the 3D tilt — tilting a
-              // table of live data ruins legibility and the user
-              // flagged the misalignment that caused. Other cards
-              // keep the tilt for the showcase effect.
               const cardInner = (
                 <CardChrome
                   title={item.title}
@@ -63,7 +57,7 @@ export function Portfolio() {
                             {item.title}
                           </span>
                           <span className="text-[10px] text-[var(--color-tertiary)]/70">
-                            Live preview · auto-cycling
+                            Live preview, auto-cycling
                           </span>
                         </div>
                         <span className="inline-flex items-center gap-1.5">
@@ -84,11 +78,7 @@ export function Portfolio() {
                       </div>
                     </div>
                   ) : (
-                    <CaseVisual
-                      kind={item.kind as CaseKind}
-                      image={item.image}
-                      alt={`${item.title} — ${item.client}`}
-                    />
+                    <CaseVisual kind={item.kind as CaseKind} />
                   )}
                 </CardChrome>
               );
@@ -110,10 +100,7 @@ export function Portfolio() {
   );
 }
 
-/**
- * TiltCard — cursor-driven 3D tilt. Math: cursor offset from center
- * in normalized [-1, 1], scaled to ±8° tilt. Spring smoothing.
- */
+/** Cursor-driven 3D tilt for non-featured cards. */
 function TiltCard({ children }: { children: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
@@ -162,30 +149,24 @@ interface CardChromeProps {
   children: ReactNode;
 }
 
+/**
+ * Hover overlay carries the metadata (client, blurb, tags). No
+ * "View case study" CTA because there are no detail pages to
+ * link to. The card itself tells the story.
+ */
 function CardChrome({ title, client, blurb, tags, children }: CardChromeProps) {
   return (
     <div className="group relative h-full overflow-hidden rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-elevated)] transition-colors duration-300 hover:border-[var(--color-accent)]/35">
       {children}
-      {/* Hover metadata overlay */}
-      <div
-        className="pointer-events-none absolute inset-0 flex flex-col justify-end gap-3 bg-gradient-to-t from-[var(--color-base)]/95 via-[var(--color-base)]/60 to-transparent p-6 opacity-0 transition-opacity duration-400 group-hover:opacity-100"
-      >
-        <div className="flex items-end justify-between gap-4">
-          <div className="flex flex-col gap-1">
-            <span className="text-caption text-[var(--color-tertiary)]">
-              {client}
-            </span>
-            <h3 className="text-heading text-[var(--color-primary)]">
-              {title}
-            </h3>
-            <p className="text-body text-[var(--color-secondary)] max-w-[40ch]">
-              {blurb}
-            </p>
-          </div>
-          <span className="inline-flex items-center gap-1 text-[12px] font-medium text-[var(--color-accent)]">
-            View case study
-            <ArrowUpRight size={14} />
+      <div className="pointer-events-none absolute inset-0 flex flex-col justify-end gap-3 bg-gradient-to-t from-[var(--color-base)]/95 via-[var(--color-base)]/60 to-transparent p-6 opacity-0 transition-opacity duration-400 group-hover:opacity-100">
+        <div className="flex flex-col gap-1">
+          <span className="text-caption text-[var(--color-tertiary)]">
+            {client}
           </span>
+          <h3 className="text-heading text-[var(--color-primary)]">{title}</h3>
+          <p className="text-body text-[var(--color-secondary)] max-w-[40ch]">
+            {blurb}
+          </p>
         </div>
         <div className="flex flex-wrap gap-1.5">
           {tags.map((t) => (
@@ -201,4 +182,3 @@ function CardChrome({ title, client, blurb, tags, children }: CardChromeProps) {
     </div>
   );
 }
-

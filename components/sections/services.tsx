@@ -1,7 +1,6 @@
 "use client";
 
 import { motion, useInView } from "motion/react";
-import { ArrowUpRight } from "lucide-react";
 import { useRef } from "react";
 import { ScrollReveal, revealChild } from "@/components/animations/scroll-reveal";
 import { SplitText } from "@/components/animations/split-text";
@@ -9,14 +8,13 @@ import { ServiceIcon } from "@/components/icons/service-icons";
 import { siteConfig } from "@/lib/site-config";
 
 /**
- * Services — 4×2 grid of 8 cards. Each card has a numeric id, an
- * animated icon, title, description, and tag pills. On hover the
- * card lifts 8 px, the border picks up an accent tint, and a
- * "Learn more →" label slides in from the bottom edge.
+ * Services — five disciplines in an asymmetric 4-col bento. Each
+ * card lists its sub-disciplines as tag pills so the studio can
+ * keep specialist depth visible without the section reading as
+ * "we will take any work."
  *
- * Icon animations are gated by the section's in-view state — they
- * pause entirely when the user scrolls away, freeing the main
- * thread for whatever section is now visible.
+ * Icon animations are gated by section in-view to free the main
+ * thread when the user is elsewhere on the page.
  */
 export function Services() {
   const ref = useRef<HTMLElement>(null);
@@ -35,12 +33,13 @@ export function Services() {
               What we build
             </span>
             <h2 className="text-display-m max-w-[16ch]">
-              <SplitText text={"Ten disciplines.\nOne studio."} />
+              <SplitText text={"Five disciplines.\nOne studio."} />
             </h2>
           </div>
           <p className="text-body-l max-w-[460px] text-[var(--color-secondary)]">
-            From product design to SAP and Apigee — design, engineering, AI,
-            and growth rolling forward as one team without handoffs.
+            Product engineering, design, AI integration, enterprise systems,
+            and the platform plus growth work that ties them together. One
+            team, no handoffs.
           </p>
         </div>
 
@@ -54,7 +53,6 @@ export function Services() {
                 transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
                 className={`group relative flex min-h-[320px] flex-col justify-between overflow-hidden rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-elevated)] p-6 transition-colors duration-300 hover:border-[var(--color-accent)]/40 ${s.span}`}
               >
-                {/* Accent tint glow on hover */}
                 <div
                   aria-hidden
                   className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
@@ -68,9 +66,7 @@ export function Services() {
                   <span className="inline-flex size-12 items-center justify-center rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-base)] text-[var(--color-primary)] transition-colors duration-300 group-hover:text-[var(--color-accent)]">
                     <ServiceIcon name={s.iconKey} active={iconsActive} />
                   </span>
-                  <span
-                    className="font-display text-[2.5rem] font-semibold leading-none text-[var(--color-tertiary)]/40 transition-colors duration-300 group-hover:text-[var(--color-tertiary)]"
-                  >
+                  <span className="font-display text-[2.5rem] font-semibold leading-none text-[var(--color-tertiary)]/40 transition-colors duration-300 group-hover:text-[var(--color-tertiary)]">
                     {s.id}
                   </span>
                 </div>
@@ -91,14 +87,6 @@ export function Services() {
                       {tag}
                     </span>
                   ))}
-                </div>
-
-                <div
-                  aria-hidden
-                  className="pointer-events-none absolute inset-x-6 bottom-3 flex translate-y-4 items-center gap-1.5 text-[12px] font-medium text-[var(--color-accent)] opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100"
-                >
-                  Learn more
-                  <ArrowUpRight size={13} />
                 </div>
               </motion.article>
             ))}

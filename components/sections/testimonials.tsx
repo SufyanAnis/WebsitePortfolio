@@ -1,20 +1,19 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
-import { Star, GripHorizontal } from "lucide-react";
+import { GripHorizontal } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { SplitText } from "@/components/animations/split-text";
 import { siteConfig } from "@/lib/site-config";
 
 /**
- * Testimonials — horizontal draggable carousel.
+ * Capabilities — formerly Testimonials. Per QA report, the
+ * fabricated testimonials section was undermining credibility.
+ * Reframed as forward-looking capability statements ("What we
+ * deliver") rather than unverifiable third-party praise.
  *
- * Drag uses Framer Motion's `drag="x"` with constraints computed
- * from scrollWidth − viewportWidth, plus a small elastic overshoot
- * for the bounce-back feel.  Momentum is on by default.
- *
- * Reduced-motion users see a static scrollable row (browser
- * overflow-x: auto). No layout shift between modes.
+ * Layout is the same draggable horizontal carousel so the visual
+ * rhythm of the page is preserved.
  */
 export function Testimonials() {
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -40,10 +39,10 @@ export function Testimonials() {
         <div className="mb-12 flex flex-col gap-6 lg:mb-16 lg:flex-row lg:items-end lg:justify-between">
           <div className="flex flex-col gap-6">
             <span className="text-micro text-[var(--color-tertiary)]">
-              In their words
+              What we deliver
             </span>
-            <h2 className="text-display-m max-w-[16ch]">
-              <SplitText text={"What clients\nactually say."} />
+            <h2 className="text-display-m max-w-[18ch]">
+              <SplitText text={"Six commitments\nbehind every project."} />
             </h2>
           </div>
           <span className="inline-flex items-center gap-2 text-caption text-[var(--color-tertiary)]">
@@ -60,15 +59,15 @@ export function Testimonials() {
       >
         <motion.div
           ref={trackRef}
-          className="flex cursor-grab gap-4 px-6 pb-2 lg:px-12 lg:gap-5"
+          className="flex cursor-grab gap-4 px-6 pb-2 lg:gap-5 lg:px-12"
           drag={reduced ? false : "x"}
           dragConstraints={constraint}
           dragElastic={0.06}
           dragTransition={{ bounceStiffness: 220, bounceDamping: 26 }}
           whileTap={{ cursor: "grabbing" }}
         >
-          {siteConfig.testimonials.map((t, i) => (
-            <TestimonialCard key={t.name} index={i} {...t} />
+          {siteConfig.capabilities.map((c, i) => (
+            <CapabilityCard key={c.headline} index={i} {...c} />
           ))}
         </motion.div>
       </div>
@@ -76,37 +75,21 @@ export function Testimonials() {
   );
 }
 
-interface CardProps {
-  quote: string;
-  name: string;
-  role: string;
-  company: string;
-  country: string;
-  initials: string;
+interface CapabilityCardProps {
+  headline: string;
+  body: string;
+  tag: string;
   index: number;
 }
 
-const AVATAR_GRADIENTS = [
-  ["#1a6bff", "#0ea5e9"],
-  ["#8b5cf6", "#3b82f6"],
-  ["#22d3ee", "#1a6bff"],
-  ["#f97316", "#f5a623"],
-  ["#10b981", "#22d3ee"],
-  ["#ec4899", "#8b5cf6"],
-];
-
-function TestimonialCard({
-  quote,
-  name,
-  role,
-  company,
-  country,
-  initials,
+function CapabilityCard({
+  headline,
+  body,
+  tag,
   index,
-}: CardProps) {
-  const grad = AVATAR_GRADIENTS[index % AVATAR_GRADIENTS.length];
+}: CapabilityCardProps) {
   return (
-    <motion.figure
+    <motion.article
       className="flex w-[300px] shrink-0 flex-col justify-between rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-elevated)] p-6 lg:w-[340px]"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -118,53 +101,12 @@ function TestimonialCard({
       }}
     >
       <div className="flex flex-col gap-5">
-        <div
-          className="flex gap-0.5 text-[var(--color-warning)]"
-          aria-label="5 out of 5 stars"
-        >
-          {Array.from({ length: 5 }).map((_, s) => (
-            <motion.span
-              key={s}
-              initial={{ opacity: 0, scale: 0.4 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true, margin: "-10%" }}
-              transition={{
-                duration: 0.3,
-                delay: 0.2 + s * 0.06,
-                ease: [0.23, 1, 0.32, 1],
-              }}
-            >
-              <Star size={13} fill="currentColor" strokeWidth={0} />
-            </motion.span>
-          ))}
-        </div>
-        <blockquote className="text-body italic font-light text-[var(--color-secondary)]">
-          “{quote}”
-        </blockquote>
-      </div>
-
-      <div className="mt-6 flex items-center gap-3 border-t border-[var(--color-border-subtle)] pt-5">
-        <span
-          className="flex size-9 shrink-0 items-center justify-center rounded-full text-[12px] font-semibold text-white"
-          style={{
-            background: `linear-gradient(135deg, ${grad[0]}, ${grad[1]})`,
-          }}
-          aria-hidden
-        >
-          {initials}
+        <span className="inline-flex w-fit items-center rounded-full border border-[var(--color-border-subtle)] bg-[var(--color-base)]/60 px-2.5 py-0.5 text-[11px] uppercase tracking-[0.18em] text-[var(--color-tertiary)]">
+          {tag}
         </span>
-        <div className="flex min-w-0 flex-1 flex-col">
-          <span className="truncate text-[13px] font-medium text-[var(--color-primary)]">
-            {name}
-          </span>
-          <span className="truncate text-[11px] text-[var(--color-tertiary)]">
-            {role} · {company}
-          </span>
-        </div>
-        <span className="rounded-md border border-[var(--color-border-subtle)] bg-[var(--color-base)] px-1.5 py-0.5 text-[10px] font-medium tracking-[0.15em] text-[var(--color-tertiary)]">
-          {country}
-        </span>
+        <h3 className="text-heading">{headline}</h3>
+        <p className="text-body text-[var(--color-secondary)]">{body}</p>
       </div>
-    </motion.figure>
+    </motion.article>
   );
 }

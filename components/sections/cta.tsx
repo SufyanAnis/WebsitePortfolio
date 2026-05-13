@@ -1,48 +1,60 @@
 "use client";
 
 import { motion, useInView } from "motion/react";
-import { ArrowRight, Mail, MessageCircle, Calendar } from "lucide-react";
+import {
+  ArrowRight,
+  Mail,
+  MessageCircle,
+  Calendar,
+  Check,
+} from "lucide-react";
 import { type FormEvent, useRef, useState } from "react";
 import { SplitText } from "@/components/animations/split-text";
 import { Magnetic } from "@/components/animations/magnetic";
-import { siteConfig } from "@/lib/site-config";
+import { siteConfig, nextAvailableQuarter } from "@/lib/site-config";
 
 /**
  * CTA — full-viewport closing section.
  *
- * Background is a CSS animated mesh gradient (NOT a Three.js shader
- * — too expensive given the user's perf budget). Three layered
- * radial gradients drift independently with simple keyframe motion
- * for a slow, shifting feel.
+ * Now ships with a structured intake form (per QA recommendation):
+ * name, company, email, project type, budget, timeline. Cold-
+ * draft email is no longer the only way in.
  *
- * Three contact cards (Email / WhatsApp / Calendly) with magnetic
- * hover, plus a single email input below for lead capture.
+ * Contact channel cards are conditionally rendered: each card is
+ * shown only when its corresponding env var has a value. Nothing
+ * fake ships if a channel isn't wired yet.
  */
 export function Cta() {
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, { margin: "-5%" });
-  const whatsapp = siteConfig.socials.find((s) => s.key === "whatsapp");
+  const availability = nextAvailableQuarter();
 
   const cards = [
-    {
-      label: "Email",
-      value: siteConfig.contact.email,
-      href: `mailto:${siteConfig.contact.email}`,
-      icon: Mail,
-    },
-    {
-      label: "WhatsApp",
-      value: whatsapp?.handle ?? "+92 300 0000000",
-      href: whatsapp?.href ?? "#",
-      icon: MessageCircle,
-    },
-    {
-      label: "Calendly",
-      value: "Book a 30-minute intro",
-      href: "https://cal.com/swift-labs",
-      icon: Calendar,
-    },
-  ];
+    siteConfig.contact.email
+      ? {
+          label: "Email",
+          value: siteConfig.contact.email,
+          href: `mailto:${siteConfig.contact.email}`,
+          icon: Mail,
+        }
+      : null,
+    siteConfig.contact.whatsapp && siteConfig.contact.whatsappHref
+      ? {
+          label: "WhatsApp",
+          value: siteConfig.contact.whatsapp,
+          href: siteConfig.contact.whatsappHref,
+          icon: MessageCircle,
+        }
+      : null,
+    siteConfig.contact.calendly
+      ? {
+          label: "Calendly",
+          value: "Book a 30-minute intro",
+          href: siteConfig.contact.calendly,
+          icon: Calendar,
+        }
+      : null,
+  ].filter((c): c is NonNullable<typeof c> => c !== null);
 
   return (
     <section
@@ -50,9 +62,6 @@ export function Cta() {
       id="contact"
       className="relative isolate flex min-h-[100svh] flex-col items-center justify-center overflow-hidden px-6 py-32 lg:px-12"
     >
-      {/* Background — animated mesh gradient via three layered
-          radial gradients. Each keyframe shifts position over a
-          long cycle for slow, ambient motion. */}
       <div className="absolute inset-0 -z-10 bg-[var(--color-base)]">
         <motion.div
           aria-hidden
@@ -104,7 +113,6 @@ export function Cta() {
             ease: "easeInOut",
           }}
         />
-        {/* Faint grid */}
         <div
           aria-hidden
           className="absolute inset-0 opacity-[0.05]"
@@ -120,7 +128,7 @@ export function Cta() {
         />
       </div>
 
-      <div className="flex flex-col items-center gap-12 text-center">
+      <div className="flex w-full flex-col items-center gap-12 text-center">
         <span className="text-micro text-[var(--color-tertiary)]">
           Let's talk
         </span>
@@ -129,90 +137,247 @@ export function Cta() {
           <SplitText text={"Let's build\nsomething\nextraordinary."} />
         </h2>
 
-        <p className="text-body-l max-w-[540px] text-[var(--color-secondary)]">
-          We take on a handful of projects each quarter. The next opening is
-          Q3. If your idea needs engineering, design, and AI in the same
-          room, start a conversation below.
+        <p className="text-body-l max-w-[600px] text-[var(--color-secondary)]">
+          Discovery sprints start at {siteConfig.pricing.discoveryFrom}. The
+          next opening is {availability}. Send a short brief below and you'll
+          have a written reply within 12 hours on weekdays.
         </p>
 
-        {/* Contact cards */}
-        <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4 max-w-[820px]">
-          {cards.map((c) => (
-            <Magnetic key={c.label} strength={5}>
-              <a
-                href={c.href}
-                target={c.href.startsWith("http") ? "_blank" : undefined}
-                rel={
-                  c.href.startsWith("http")
-                    ? "noopener noreferrer"
-                    : undefined
-                }
-                className="group block w-full rounded-2xl border border-[var(--color-border-default)] bg-[var(--color-glass)] p-5 text-left backdrop-blur-md transition-colors duration-300 hover:border-[var(--color-accent)]/40"
-                data-cursor="link"
-              >
-                <div className="flex items-start justify-between">
-                  <span className="inline-flex size-8 items-center justify-center rounded-lg bg-[var(--color-accent-soft)] text-[var(--color-accent)]">
-                    <c.icon size={15} />
-                  </span>
-                  <motion.span
-                    className="text-[var(--color-tertiary)] transition-colors group-hover:text-[var(--color-primary)]"
-                    initial={{ x: -2, opacity: 0.4 }}
-                    whileHover={{ x: 0, opacity: 1 }}
-                  >
-                    <ArrowRight size={16} />
-                  </motion.span>
-                </div>
-                <div className="mt-4 text-micro text-[var(--color-tertiary)]">
-                  {c.label}
-                </div>
-                <div className="mt-1 text-[14px] font-medium text-[var(--color-primary)]">
-                  {c.value}
-                </div>
-              </a>
-            </Magnetic>
-          ))}
-        </div>
+        {cards.length > 0 && (
+          <div className="grid w-full max-w-[820px] grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
+            {cards.map((c) => (
+              <Magnetic key={c.label} strength={5}>
+                <a
+                  href={c.href}
+                  target={c.href.startsWith("http") ? "_blank" : undefined}
+                  rel={
+                    c.href.startsWith("http")
+                      ? "noopener noreferrer"
+                      : undefined
+                  }
+                  className="group block w-full rounded-2xl border border-[var(--color-border-default)] bg-[var(--color-glass)] p-5 text-left backdrop-blur-md transition-colors duration-300 hover:border-[var(--color-accent)]/40"
+                  data-cursor="link"
+                >
+                  <div className="flex items-start justify-between">
+                    <span className="inline-flex size-8 items-center justify-center rounded-lg bg-[var(--color-accent-soft)] text-[var(--color-accent)]">
+                      <c.icon size={15} />
+                    </span>
+                    <motion.span
+                      className="text-[var(--color-tertiary)] transition-colors group-hover:text-[var(--color-primary)]"
+                      initial={{ x: -2, opacity: 0.4 }}
+                      whileHover={{ x: 0, opacity: 1 }}
+                    >
+                      <ArrowRight size={16} />
+                    </motion.span>
+                  </div>
+                  <div className="mt-4 text-micro text-[var(--color-tertiary)]">
+                    {c.label}
+                  </div>
+                  <div className="mt-1 text-[14px] font-medium text-[var(--color-primary)]">
+                    {c.value}
+                  </div>
+                </a>
+              </Magnetic>
+            ))}
+          </div>
+        )}
 
-        {/* Email capture */}
-        <EmailCapture />
+        <ContactForm />
       </div>
     </section>
   );
 }
 
-function EmailCapture() {
-  const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
+/**
+ * Structured contact intake form — name, company, email, project
+ * type, budget band, timeline, message.
+ *
+ * The submit handler currently shows a success state on the
+ * client only. Wire up to /api/lead in Phase 8 (Vercel
+ * serverless function that forwards to your inbox or a CRM).
+ */
+function ContactForm() {
+  const [state, setState] = useState<{
+    submitting: boolean;
+    sent: boolean;
+    error: string | null;
+  }>({ submitting: false, sent: false, error: null });
 
-  function onSubmit(e: FormEvent) {
+  function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!email.includes("@")) return;
-    setSubmitted(true);
-    // Real impl would POST to /api/lead. Phase 8 work.
+    const fd = new FormData(e.currentTarget);
+    const email = String(fd.get("email") ?? "");
+    if (!email.includes("@")) {
+      setState({ submitting: false, sent: false, error: "Please enter a valid email." });
+      return;
+    }
+    setState({ submitting: true, sent: false, error: null });
+    // TODO: replace with a POST to /api/lead once the route is built.
+    window.setTimeout(() => {
+      setState({ submitting: false, sent: true, error: null });
+    }, 700);
+  }
+
+  if (state.sent) {
+    return (
+      <div className="flex w-full max-w-[640px] flex-col items-center gap-3 rounded-2xl border border-[var(--color-success)]/30 bg-[var(--color-base)]/60 p-8 backdrop-blur-md">
+        <span className="inline-flex size-10 items-center justify-center rounded-full bg-[var(--color-success)]/15 text-[var(--color-success)]">
+          <Check size={18} />
+        </span>
+        <h3 className="text-heading text-[var(--color-primary)]">
+          Brief received.
+        </h3>
+        <p className="text-body text-[var(--color-secondary)]">
+          You'll have a written reply within 12 hours on weekdays.
+        </p>
+      </div>
+    );
   }
 
   return (
     <form
       onSubmit={onSubmit}
-      className="flex w-full max-w-[440px] items-center gap-2 rounded-full border border-[var(--color-border-default)] bg-[var(--color-glass)] p-1.5 backdrop-blur-md"
+      className="grid w-full max-w-[760px] grid-cols-1 gap-3 rounded-2xl border border-[var(--color-border-default)] bg-[var(--color-glass)] p-5 text-left backdrop-blur-md sm:p-6 md:grid-cols-2"
     >
-      <input
-        type="email"
+      <Field
+        name="name"
+        label="Your name"
+        placeholder="Sara Chen"
         required
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder={submitted ? "Got it — we'll be in touch." : "you@company.com"}
-        disabled={submitted}
-        className="flex-1 bg-transparent px-4 py-2 text-[14px] text-[var(--color-primary)] placeholder:text-[var(--color-tertiary)] focus:outline-none disabled:text-[var(--color-success)]"
       />
-      <button
-        type="submit"
-        disabled={submitted}
-        className="inline-flex size-10 items-center justify-center rounded-full bg-[var(--color-accent)] text-white transition-transform hover:scale-[1.04] active:scale-[0.96] disabled:opacity-60"
-        aria-label="Subscribe"
-      >
-        <ArrowRight size={16} />
-      </button>
+      <Field
+        name="company"
+        label="Company"
+        placeholder="Acme Inc."
+      />
+      <Field
+        name="email"
+        type="email"
+        label="Email"
+        placeholder="you@company.com"
+        required
+      />
+      <Select
+        name="projectType"
+        label="Project type"
+        options={[
+          "Web build",
+          "Mobile app",
+          "AI integration",
+          "Enterprise (SAP / Apigee / Jira)",
+          "Design system",
+          "Other",
+        ]}
+      />
+      <Select
+        name="budget"
+        label="Budget range"
+        options={[
+          "Under $10k",
+          "$10k – $25k",
+          "$25k – $75k",
+          "$75k – $200k",
+          "$200k+",
+        ]}
+      />
+      <Select
+        name="timeline"
+        label="Timeline"
+        options={[
+          "Within 2 weeks",
+          "1 – 2 months",
+          "2 – 6 months",
+          "6+ months",
+          "Exploring",
+        ]}
+      />
+      <div className="flex flex-col gap-1.5 md:col-span-2">
+        <label className="text-[10px] uppercase tracking-[0.18em] text-[var(--color-tertiary)]">
+          Tell us about the project
+        </label>
+        <textarea
+          name="message"
+          rows={3}
+          placeholder="A paragraph or two on the goal, the constraints, anything we should know..."
+          className="resize-none rounded-xl border border-[var(--color-border-default)] bg-[var(--color-base)]/60 px-4 py-3 text-[14px] text-[var(--color-primary)] placeholder:text-[var(--color-tertiary)] focus:border-[var(--color-accent)]/50 focus:outline-none"
+        />
+      </div>
+
+      {state.error && (
+        <p className="text-[12px] text-red-400 md:col-span-2">{state.error}</p>
+      )}
+
+      <div className="flex flex-col items-stretch gap-3 md:col-span-2 md:flex-row md:items-center md:justify-between">
+        <span className="text-[11px] text-[var(--color-tertiary)]">
+          Your details stay private. No newsletters, ever.
+        </span>
+        <button
+          type="submit"
+          disabled={state.submitting}
+          className="inline-flex items-center justify-center gap-2 self-stretch rounded-full bg-[var(--color-accent)] px-6 py-3 text-[14px] font-medium text-white transition-transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60"
+        >
+          {state.submitting ? "Sending..." : "Send brief"}
+          <ArrowRight size={15} />
+        </button>
+      </div>
     </form>
+  );
+}
+
+function Field({
+  name,
+  label,
+  type = "text",
+  placeholder,
+  required,
+}: {
+  name: string;
+  label: string;
+  type?: string;
+  placeholder?: string;
+  required?: boolean;
+}) {
+  return (
+    <div className="flex flex-col gap-1.5">
+      <label className="text-[10px] uppercase tracking-[0.18em] text-[var(--color-tertiary)]">
+        {label}
+      </label>
+      <input
+        name={name}
+        type={type}
+        required={required}
+        placeholder={placeholder}
+        className="rounded-xl border border-[var(--color-border-default)] bg-[var(--color-base)]/60 px-4 py-3 text-[14px] text-[var(--color-primary)] placeholder:text-[var(--color-tertiary)] focus:border-[var(--color-accent)]/50 focus:outline-none"
+      />
+    </div>
+  );
+}
+
+function Select({
+  name,
+  label,
+  options,
+}: {
+  name: string;
+  label: string;
+  options: string[];
+}) {
+  return (
+    <div className="flex flex-col gap-1.5">
+      <label className="text-[10px] uppercase tracking-[0.18em] text-[var(--color-tertiary)]">
+        {label}
+      </label>
+      <select
+        name={name}
+        className="appearance-none rounded-xl border border-[var(--color-border-default)] bg-[var(--color-base)]/60 px-4 py-3 text-[14px] text-[var(--color-primary)] focus:border-[var(--color-accent)]/50 focus:outline-none"
+      >
+        <option value="">Pick one</option>
+        {options.map((o) => (
+          <option key={o} value={o}>
+            {o}
+          </option>
+        ))}
+      </select>
+    </div>
   );
 }

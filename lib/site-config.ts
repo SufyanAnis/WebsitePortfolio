@@ -149,9 +149,8 @@ export const siteConfig = {
   /**
    * Portfolio bento — 9 case studies. The featured card runs a
    * live kanban animation; every other card uses a real photo
-   * (tailored Pollinations prompt per case) with a kind badge
-   * and dark gradient overlay so they read as editorial work
-   * cards rather than stock-photo wallpaper.
+   * stored locally in /public/case-studies/ so production is
+   * never blocked on a third-party image host.
    *
    * Span values target a 12-column grid; rows balance to 12.
    */
@@ -176,8 +175,7 @@ export const siteConfig = {
         "Headless Hydrogen storefront with sub-1s LCP, full motion and live cart.",
       tags: ["Shopify", "Hydrogen", "Edge"],
       span: "col-span-12 sm:col-span-6 lg:col-span-5",
-      image:
-        "https://image.pollinations.ai/prompt/Editorial%20product%20photography%20premium%20amber%20glass%20skincare%20bottles%20arranged%20on%20dark%20marble%20surface%20moody%20studio%20lighting%20magazine%20quality?width=1200&height=800&seed=11&nologo=true",
+      image: "/case-studies/shopify-headless.jpg",
     },
     {
       slug: "lms-platform",
@@ -188,8 +186,7 @@ export const siteConfig = {
         "Personalised learning paths driven by an evaluator agent and weekly retros.",
       tags: ["Next.js", "OpenAI", "Stripe"],
       span: "col-span-12 sm:col-span-6 lg:col-span-5",
-      image:
-        "https://image.pollinations.ai/prompt/Modern%20minimalist%20online%20learning%20workspace%20laptop%20screen%20glowing%20interface%20dark%20wooden%20desk%20notebook%20cinematic?width=1200&height=800&seed=22&nologo=true",
+      image: "/case-studies/lms-platform.jpg",
     },
     {
       slug: "fintech-portal",
@@ -199,8 +196,7 @@ export const siteConfig = {
       blurb: "KYC-aware onboarding cutting drop-off by 41 %.",
       tags: ["KYC", "Stripe", "Audit"],
       span: "col-span-12 sm:col-span-6 lg:col-span-4",
-      image:
-        "https://image.pollinations.ai/prompt/Hands%20holding%20smartphone%20displaying%20sleek%20banking%20app%20dark%20navy%20gradient%20minimalist%20premium%20fintech%20photography?width=1200&height=800&seed=33&nologo=true",
+      image: "/case-studies/fintech-portal.jpg",
     },
     {
       slug: "ai-copilot",
@@ -211,8 +207,7 @@ export const siteConfig = {
         "Conversational analytics over six years of transaction history with audit logs.",
       tags: ["RAG", "Anthropic", "Vector DB"],
       span: "col-span-12 lg:col-span-8",
-      image:
-        "https://image.pollinations.ai/prompt/Abstract%20glowing%20neural%20network%20visualization%20cinematic%20blue%20particles%20dark%20gradient%20technology%20artificial%20intelligence%20concept?width=1600&height=900&seed=44&nologo=true",
+      image: "/case-studies/ai-copilot.jpg",
     },
     {
       slug: "shopify-plus",
@@ -223,8 +218,7 @@ export const siteConfig = {
         "Eight regional Shopify Plus storefronts on one Hydrogen monorepo with shared design tokens.",
       tags: ["Shopify Plus", "Monorepo", "Hydrogen"],
       span: "col-span-12 sm:col-span-6 lg:col-span-7",
-      image:
-        "https://image.pollinations.ai/prompt/Modern%20flagship%20retail%20boutique%20interior%20warm%20pendant%20lighting%20dark%20moody%20atmospheric%20premium%20brand%20store%20wide%20angle?width=1600&height=900&seed=55&nologo=true",
+      image: "/case-studies/shopify-plus.jpg",
     },
     {
       slug: "jira-rollout",
@@ -235,8 +229,7 @@ export const siteConfig = {
         "Greenfield Jira + Confluence rollout with custom workflows and SSO across 12 teams.",
       tags: ["Jira", "Confluence", "SSO"],
       span: "col-span-12 sm:col-span-6 lg:col-span-5",
-      image:
-        "https://image.pollinations.ai/prompt/Modern%20technology%20team%20sprint%20planning%20whiteboard%20sticky%20notes%20kanban%20board%20dark%20moody%20office%20cinematic?width=1200&height=800&seed=66&nologo=true",
+      image: "/case-studies/jira-rollout.jpg",
     },
     {
       slug: "rightnow-crm",
@@ -247,8 +240,7 @@ export const siteConfig = {
         "Oracle RightNow customisation + handoff workflows wired into the agent desktop.",
       tags: ["Oracle", "RightNow", "Workflows"],
       span: "col-span-12 sm:col-span-6 lg:col-span-5",
-      image:
-        "https://image.pollinations.ai/prompt/Professional%20customer%20service%20agent%20wearing%20headset%20multiple%20monitors%20dark%20modern%20workstation%20ambient%20lighting%20cinematic?width=1200&height=800&seed=77&nologo=true",
+      image: "/case-studies/rightnow-crm.jpg",
     },
     {
       slug: "apigee-gateway",
@@ -259,8 +251,7 @@ export const siteConfig = {
         "End-to-end Apigee mediation, rate-limit policies, and observability for 14 partner APIs.",
       tags: ["Apigee", "OAuth2", "Analytics"],
       span: "col-span-12 sm:col-span-6 lg:col-span-7",
-      image:
-        "https://image.pollinations.ai/prompt/Abstract%20futuristic%20API%20network%20technology%20glowing%20connection%20lines%20nodes%20dark%20gradient%20cyber%20infrastructure?width=1600&height=900&seed=88&nologo=true",
+      image: "/case-studies/apigee-gateway.jpg",
     },
   ],
 

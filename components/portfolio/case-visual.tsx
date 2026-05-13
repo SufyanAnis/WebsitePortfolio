@@ -51,7 +51,6 @@ export function CaseVisual({ kind, image, alt }: CaseVisualProps) {
         fill
         sizes="(min-width: 1024px) 50vw, 100vw"
         className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-[1.06]"
-        unoptimized
       />
 
       {/* Tint to land photos consistently in the dark theme */}

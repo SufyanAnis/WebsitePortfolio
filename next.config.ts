@@ -5,16 +5,10 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   images: {
     formats: ["image/avif", "image/webp"],
+    // Case-study photos now live in /public/case-studies — no
+    // third-party image host needed at runtime. Reserve unsplash
+    // for any future swap to client-supplied screenshots.
     remotePatterns: [
-      // Case-study photography via Pollinations AI. Deterministic
-      // by seed so each card always shows the same image.
-      {
-        protocol: "https",
-        hostname: "image.pollinations.ai",
-        pathname: "/prompt/**",
-      },
-      // Reserve unsplash too — useful for swapping in real photos
-      // when client-supplied screenshots aren't available yet.
       {
         protocol: "https",
         hostname: "images.unsplash.com",

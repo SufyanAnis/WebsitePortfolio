@@ -24,8 +24,15 @@ export function Hero() {
   const reduced = useReducedMotion();
   const [wordIdx, setWordIdx] = useState(0);
   const [isDesktop, setIsDesktop] = useState(false);
+  // Compute quarter on client only to avoid SSR/CSR text mismatch
+  // if the build clock and the user's clock are on opposite sides
+  // of a quarter boundary.
+  const [availability, setAvailability] = useState<string>("");
   const cyclingWords = siteConfig.heroWords;
-  const availability = nextAvailableQuarter();
+
+  useEffect(() => {
+    setAvailability(nextAvailableQuarter());
+  }, []);
 
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 1024px)");
@@ -100,7 +107,9 @@ export function Hero() {
               className="absolute inset-0 size-1.5 animate-ping rounded-full bg-[var(--color-success)] opacity-60"
             />
           </span>
-          Available for {availability} projects
+          {availability
+            ? `Available for ${availability} projects`
+            : "Now booking new projects"}
         </motion.span>
 
         <h1 className="text-display-xl">

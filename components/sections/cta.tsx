@@ -8,7 +8,7 @@ import {
   Calendar,
   Check,
 } from "lucide-react";
-import { type FormEvent, useRef, useState } from "react";
+import { type FormEvent, useEffect, useRef, useState } from "react";
 import { SplitText } from "@/components/animations/split-text";
 import { Magnetic } from "@/components/animations/magnetic";
 import { siteConfig, nextAvailableQuarter } from "@/lib/site-config";
@@ -27,7 +27,11 @@ import { siteConfig, nextAvailableQuarter } from "@/lib/site-config";
 export function Cta() {
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, { margin: "-5%" });
-  const availability = nextAvailableQuarter();
+  // Client-only quarter computation to avoid hydration mismatch.
+  const [availability, setAvailability] = useState<string>("");
+  useEffect(() => {
+    setAvailability(nextAvailableQuarter());
+  }, []);
 
   const cards = [
     siteConfig.contact.email
@@ -138,9 +142,12 @@ export function Cta() {
         </h2>
 
         <p className="text-body-l max-w-[600px] text-[var(--color-secondary)]">
-          Discovery sprints start at {siteConfig.pricing.discoveryFrom}. The
-          next opening is {availability}. Send a short brief below and you'll
-          have a written reply within 12 hours on weekdays.
+          Discovery sprints start at {siteConfig.pricing.discoveryFrom}.{" "}
+          {availability
+            ? `The next opening is ${availability}.`
+            : "Open for new projects."}{" "}
+          Send a short brief below and you'll have a written reply within 12
+          hours on weekdays.
         </p>
 
         {cards.length > 0 && (

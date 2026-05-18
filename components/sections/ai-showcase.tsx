@@ -6,6 +6,7 @@ import {
   useInView,
   useReducedMotion,
 } from "motion/react";
+
 import {
   ArrowUpRight,
   TrendingDown,

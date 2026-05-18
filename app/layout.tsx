@@ -159,10 +159,14 @@ export default function RootLayout({
       className={`${syne.variable} ${dmSans.variable}`}
       suppressHydrationWarning
     >
-      <head>
+      <body
+        className="bg-base text-primary font-body antialiased"
+        suppressHydrationWarning
+      >
+        {/* React 19 hoists script tags to <head> automatically;
+            we don't manage a <head> element manually in app router
+            because Next.js owns it and mixing fights hydration. */}
         <StructuredData />
-      </head>
-      <body className="bg-base text-primary font-body antialiased">
         <LenisProvider>{children}</LenisProvider>
         <CustomCursor />
       </body>

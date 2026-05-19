@@ -16,6 +16,7 @@
 
 export type CaseKind =
   | "shopify"
+  | "shopify-plus"
   | "lms"
   | "fintech"
   | "aichat"
@@ -162,6 +163,147 @@ function ShopifyMockup() {
       >
         ADD TO BAG
       </text>
+    </svg>
+  );
+}
+
+/**
+ * ShopifyPlusMockup — multi-region admin view. Distinct from the
+ * consumer storefront (ShopifyMockup) so the two Shopify-tagged
+ * case studies don't render with the same visual.
+ */
+function ShopifyPlusMockup() {
+  const stores: {
+    code: string;
+    slug: string;
+    rev: string;
+    trend: number;
+    accent: string;
+  }[] = [
+    { code: "US", slug: "yara.com", rev: "$42.1k", trend: 0.88, accent: "#1a6bff" },
+    { code: "UK", slug: "yara.co.uk", rev: "$18.4k", trend: 0.61, accent: "#8b5cf6" },
+    { code: "DE", slug: "yara.de", rev: "$12.7k", trend: 0.72, accent: "#10b981" },
+    { code: "FR", slug: "yara.fr", rev: "$9.2k", trend: 0.48, accent: "#f5a623" },
+    { code: "AU", slug: "yara.com.au", rev: "$22.6k", trend: 0.83, accent: "#1a6bff" },
+    { code: "JP", slug: "yara.jp", rev: "$15.8k", trend: 0.66, accent: "#ef4444" },
+    { code: "NL", slug: "yara.nl", rev: "$5.1k", trend: 0.34, accent: "#10b981" },
+    { code: "CA", slug: "yara.ca", rev: "$8.9k", trend: 0.55, accent: "#8b5cf6" },
+  ];
+  return (
+    <svg {...COMMON}>
+      <rect width="400" height="300" fill="#0c0f14" />
+      <WindowChrome url="admin.shopify-plus.com/network" />
+      <text
+        x="20"
+        y="50"
+        fontSize="10"
+        fontWeight="700"
+        fill="#fff"
+        fontFamily="var(--font-display)"
+      >
+        Store network · 8 regions
+      </text>
+      <text
+        x="20"
+        y="64"
+        fontSize="7"
+        fill="rgba(255,255,255,0.5)"
+        fontFamily="var(--font-body)"
+      >
+        Today · $134.8k · 1,847 orders · 99.97% uptime
+      </text>
+      {stores.map((s, i) => {
+        const col = i % 4;
+        const row = Math.floor(i / 4);
+        const x = 20 + col * 92;
+        const y = 84 + row * 100;
+        return (
+          <g key={s.code}>
+            <rect
+              x={x}
+              y={y}
+              width="80"
+              height="86"
+              rx="4"
+              fill="rgba(255,255,255,0.025)"
+              stroke="rgba(255,255,255,0.08)"
+            />
+            {/* Region badge */}
+            <rect
+              x={x + 6}
+              y={y + 6}
+              width="22"
+              height="11"
+              rx="2"
+              fill={s.accent}
+              fillOpacity={0.2}
+              stroke={s.accent}
+              strokeOpacity={0.5}
+            />
+            <text
+              x={x + 17}
+              y={y + 14}
+              fontSize="6"
+              fontWeight="700"
+              textAnchor="middle"
+              fill={s.accent}
+              fontFamily="var(--font-body)"
+            >
+              {s.code}
+            </text>
+            {/* Live status dot */}
+            <circle cx={x + 72} cy={y + 12} r="1.8" fill="#00c97a" />
+            {/* Revenue */}
+            <text
+              x={x + 6}
+              y={y + 36}
+              fontSize="10"
+              fontWeight="700"
+              fill="#fff"
+              fontFamily="var(--font-display)"
+            >
+              {s.rev}
+            </text>
+            <text
+              x={x + 6}
+              y={y + 46}
+              fontSize="5"
+              fill="rgba(255,255,255,0.4)"
+              fontFamily="var(--font-body)"
+              letterSpacing="0.5"
+            >
+              REVENUE TODAY
+            </text>
+            {/* Trend bar */}
+            <rect
+              x={x + 6}
+              y={y + 58}
+              width="68"
+              height="2"
+              rx="1"
+              fill="rgba(255,255,255,0.08)"
+            />
+            <rect
+              x={x + 6}
+              y={y + 58}
+              width={s.trend * 68}
+              height="2"
+              rx="1"
+              fill={s.accent}
+            />
+            {/* Slug */}
+            <text
+              x={x + 6}
+              y={y + 76}
+              fontSize="5.5"
+              fill="rgba(255,255,255,0.5)"
+              fontFamily="var(--font-body)"
+            >
+              {s.slug}
+            </text>
+          </g>
+        );
+      })}
     </svg>
   );
 }
@@ -774,6 +916,7 @@ function ApigeeMockup() {
 
 const REGISTRY: Record<CaseKind, () => React.ReactElement> = {
   shopify: ShopifyMockup,
+  "shopify-plus": ShopifyPlusMockup,
   lms: LmsMockup,
   fintech: FintechMockup,
   aichat: AiChatMockup,

@@ -218,7 +218,7 @@ export const siteConfig = {
     },
     {
       slug: "shopify-plus",
-      kind: "shopify" as const,
+      kind: "shopify-plus" as const,
       title: "Multi-Store Shopify Plus",
       client: "Retail Group, AU",
       blurb:

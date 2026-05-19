@@ -119,7 +119,16 @@ export const siteConfig = {
       description:
         "Cloud, CI/CD, observability, and the analytics, SEO, and social work that turns the build into measurable revenue.",
       tags: ["AWS", "CI/CD", "Observability", "SEO", "Marketing", "Social"],
-      span: "lg:col-span-2" as const,
+      span: "lg:col-span-1" as const,
+    },
+    {
+      id: "06",
+      iconKey: "game" as const,
+      title: "Game UI/UX",
+      description:
+        "Interface, HUD, and onboarding work for mobile and casual game studios. Readable layouts, satisfying game feel, and accessibility built in from the first prototype.",
+      tags: ["Game UI", "HUDs & Menus", "Onboarding", "Mobile Games", "Motion"],
+      span: "lg:col-span-1" as const,
     },
   ],
 

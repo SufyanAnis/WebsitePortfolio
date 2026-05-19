@@ -33,7 +33,7 @@ export function Services() {
               What we build
             </span>
             <h2 className="text-display-m max-w-[16ch]">
-              <SplitText text={"Five disciplines.\nOne studio."} />
+              <SplitText text={"Six disciplines.\nOne studio."} />
             </h2>
           </div>
           <p className="text-body-l max-w-[460px] text-[var(--color-secondary)]">

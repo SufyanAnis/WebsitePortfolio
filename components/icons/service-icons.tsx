@@ -221,12 +221,48 @@ function Platform({ active }: IconProps) {
   );
 }
 
+/** Game App Design: controller silhouette with pulsing buttons. */
+function Game({ active }: IconProps) {
+  return (
+    <motion.svg {...ICON_PROPS}>
+      {/* Controller body — rounded pill with shoulder dips */}
+      <path d="M 8 11 Q 4 11 4 16 L 4 22 Q 4 25 7 25 Q 9 25 10 23 L 12 20 L 20 20 L 22 23 Q 23 25 25 25 Q 28 25 28 22 L 28 16 Q 28 11 24 11 Z" />
+      {/* D-pad cross (left) */}
+      <line x1="8.5" y1="16.5" x2="12.5" y2="16.5" />
+      <line x1="10.5" y1="14.5" x2="10.5" y2="18.5" />
+      {/* Action buttons (right) — diamond cluster, pulsing */}
+      {[
+        { cx: 21.5, cy: 14.5, d: 0 },
+        { cx: 24, cy: 16.5, d: 0.2 },
+        { cx: 21.5, cy: 18.5, d: 0.4 },
+        { cx: 19, cy: 16.5, d: 0.6 },
+      ].map((b, i) => (
+        <motion.circle
+          key={i}
+          cx={b.cx}
+          cy={b.cy}
+          r="0.95"
+          fill="currentColor"
+          animate={active ? { opacity: [0.4, 1, 0.4] } : { opacity: 0.7 }}
+          transition={{
+            duration: 1.8,
+            delay: b.d,
+            repeat: active ? Infinity : 0,
+            ease: "easeInOut",
+          }}
+        />
+      ))}
+    </motion.svg>
+  );
+}
+
 const REGISTRY: Record<ServiceIconKey, (p: IconProps) => React.ReactElement> = {
   product: Product,
   design: Design,
   ai: Ai,
   enterprise: Enterprise,
   platform: Platform,
+  game: Game,
 };
 
 export function ServiceIcon({

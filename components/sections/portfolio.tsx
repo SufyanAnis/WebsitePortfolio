@@ -1,11 +1,11 @@
 "use client";
 
 import { motion, useMotionValue, useSpring, useReducedMotion } from "motion/react";
+import Image from "next/image";
 import { useRef, type MouseEvent, type ReactNode } from "react";
 import { ScrollReveal, revealChild } from "@/components/animations/scroll-reveal";
 import { SplitText } from "@/components/animations/split-text";
 import { LiveKanban } from "@/components/portfolio/live-kanban";
-import { CaseVisual, type CaseKind } from "@/components/portfolio/case-visual";
 import { siteConfig } from "@/lib/site-config";
 
 /**
@@ -71,7 +71,32 @@ export function Portfolio() {
                       </div>
                     </div>
                   ) : (
-                    <CaseVisual kind={item.kind as CaseKind} />
+                    /* Real case-study photos from /public/case-studies/.
+                       Decorative for screen readers (the card's
+                       hover overlay carries the actual title/client/
+                       blurb), so alt is empty and the container
+                       is aria-hidden. Gradient fades the bottom
+                       half so the hover-revealed text stays
+                       readable on bright photos. */
+                    <div
+                      className="absolute inset-0 overflow-hidden"
+                      aria-hidden="true"
+                    >
+                      <Image
+                        src={`/case-studies/${item.slug}.jpg`}
+                        alt=""
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 50vw"
+                        className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                      <div
+                        className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2"
+                        style={{
+                          background:
+                            "linear-gradient(to bottom, transparent, rgba(10,10,10,0.75))",
+                        }}
+                      />
+                    </div>
                   )}
                 </CardChrome>
               );

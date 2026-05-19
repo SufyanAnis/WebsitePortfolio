@@ -22,6 +22,45 @@ export function Footer() {
               A small studio shipping web, mobile, AI, and enterprise
               integration work for ambitious teams worldwide.
             </p>
+
+            {/* Direct contact channels — visible regardless of scroll
+                position so prospects don't need to find the CTA form.
+                Email is always shown; WhatsApp / Calendly appear only
+                when their env vars are set. */}
+            <ul className="mt-1 flex flex-col gap-2 text-body">
+              {siteConfig.contact.email && (
+                <li>
+                  <a
+                    href={`mailto:${siteConfig.contact.email}`}
+                    className="inline-flex items-center gap-2 text-[var(--color-secondary)] transition-colors hover:text-[var(--color-primary)]"
+                    data-cursor="link"
+                  >
+                    <span className="text-[10px] uppercase tracking-[0.18em] text-[var(--color-tertiary)]">
+                      Email
+                    </span>
+                    <span>{siteConfig.contact.email}</span>
+                  </a>
+                </li>
+              )}
+              {siteConfig.contact.whatsapp &&
+                siteConfig.contact.whatsappHref && (
+                  <li>
+                    <a
+                      href={siteConfig.contact.whatsappHref}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-[var(--color-secondary)] transition-colors hover:text-[var(--color-primary)]"
+                      data-cursor="link"
+                    >
+                      <span className="text-[10px] uppercase tracking-[0.18em] text-[var(--color-tertiary)]">
+                        WhatsApp
+                      </span>
+                      <span>{siteConfig.contact.whatsapp}</span>
+                    </a>
+                  </li>
+                )}
+            </ul>
+
             {activeSocials.length > 0 && (
               <div className="mt-2 flex flex-wrap gap-2">
                 {activeSocials.map((s) => (

@@ -390,7 +390,11 @@ export const siteConfig = {
    * ship. Channels with empty env values are hidden at render time.
    */
   contact: {
-    email: process.env.NEXT_PUBLIC_CONTACT_EMAIL || "",
+    /* Fall back to the founder's gmail when no env var is set so
+       the contact card always renders. Override on Vercel by
+       setting NEXT_PUBLIC_CONTACT_EMAIL to a studio inbox once one
+       exists. */
+    email: process.env.NEXT_PUBLIC_CONTACT_EMAIL || "sufyananis7@gmail.com",
     calendly: process.env.NEXT_PUBLIC_CALENDLY_URL || "",
     whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "",
     whatsappHref: process.env.NEXT_PUBLIC_WHATSAPP_HREF || "",

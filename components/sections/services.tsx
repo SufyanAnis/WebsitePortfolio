@@ -58,7 +58,14 @@ export function Services() {
               variants={revealChild}
               whileHover={{ y: -8 }}
               transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
-              className={`group relative flex min-h-[320px] flex-col justify-between overflow-hidden rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-elevated)] p-6 transition-colors duration-300 hover:border-[var(--color-accent)]/40 ${s.span}`}
+              /* `justify-start` + `mt-auto` on the tag row gives a
+                 consistent rhythm across all six cards: icon pinned
+                 to top, title+blurb directly under it, tags anchored
+                 to the bottom edge. Previously `justify-between` was
+                 floating the title block to the vertical center,
+                 which made cards with differing copy lengths read as
+                 misaligned. */
+              className={`group relative flex min-h-[320px] flex-col justify-start overflow-hidden rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-elevated)] p-6 transition-colors duration-300 hover:border-[var(--color-accent)]/40 ${s.span}`}
             >
               <div
                 aria-hidden
@@ -85,7 +92,7 @@ export function Services() {
                 </p>
               </div>
 
-              <div className="relative mt-6 flex flex-wrap gap-1.5">
+              <div className="relative mt-auto flex flex-wrap gap-1.5 pt-6">
                 {s.tags.map((tag) => (
                   <span
                     key={tag}

@@ -84,7 +84,7 @@ export function Nav() {
             icon="arrow"
             magnetic={!reduced}
           >
-            Start a Project
+            Start a project
           </Button>
         </div>
       </div>

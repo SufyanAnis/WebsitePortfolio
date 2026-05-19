@@ -14,7 +14,10 @@
   /* Text */
   --color-primary: #ffffff;
   --color-secondary: rgba(255, 255, 255, 0.6);
-  --color-tertiary: rgba(255, 255, 255, 0.35);
+  /* Tertiary text was rgba(255,255,255,0.35) -> 4.0:1 contrast on
+     the #0a0a0a background, which fails WCAG AA (4.5:1 minimum for
+     normal text). Lifted to 0.5 -> ~6.4:1, well above AA. */
+  --color-tertiary: rgba(255, 255, 255, 0.5);
 
   /* Borders */
   --color-border-subtle: rgba(255, 255, 255, 0.06);

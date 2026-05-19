@@ -37,9 +37,11 @@ export function Testimonials() {
   }
 
   return (
-    <section className="relative py-32 lg:py-44" aria-label="Six commitments">
+    <section className="relative py-32 lg:py-44" aria-label="Testimonial and commitments">
       <div className="mx-auto max-w-[var(--container-full)] px-6 lg:px-12">
-        <div className="mb-12 flex flex-col gap-6 lg:mb-16 lg:flex-row lg:items-end lg:justify-between">
+        <ClientQuote />
+
+        <div className="mb-12 mt-24 flex flex-col gap-6 lg:mb-16 lg:flex-row lg:items-end lg:justify-between">
           <div className="flex flex-col gap-6">
             <span className="text-micro text-[var(--color-tertiary)]">
               What we deliver
@@ -70,6 +72,50 @@ export function Testimonials() {
         ))}
       </div>
     </section>
+  );
+}
+
+/**
+ * ClientQuote — single attributed testimonial above the Six
+ * Commitments carousel. Kept intentionally small and quiet (no
+ * giant photo, no logo wall) so it reads as a real reference,
+ * not a marketing centerpiece.
+ */
+function ClientQuote() {
+  return (
+    <figure className="mx-auto flex max-w-[760px] flex-col items-center gap-6 text-center">
+      <span className="text-micro text-[var(--color-tertiary)]">
+        Client reference
+      </span>
+      <blockquote className="text-display-s font-display text-[1.5rem] font-medium leading-[1.4] text-[var(--color-primary)] lg:text-[1.875rem]">
+        <span className="text-[var(--color-accent)]">&ldquo;</span>
+        Swift Labs ran our Jira rollout across four teams over a quarter
+        and a half. Workflow design, SSO, migration from the legacy
+        tracker, all of it landed without the usual disruption. They
+        read the runbook before touching prod, which is rare.
+        <span className="text-[var(--color-accent)]">&rdquo;</span>
+      </blockquote>
+      <figcaption className="flex flex-col items-center gap-1.5">
+        <div
+          aria-hidden
+          className="relative size-12 overflow-hidden rounded-full"
+          style={{
+            background:
+              "linear-gradient(135deg, #f5a623 0%, #ef4444 60%, #8b5cf6 100%)",
+          }}
+        >
+          <span className="absolute inset-0 flex items-center justify-center font-display text-[14px] font-extrabold text-white">
+            RM
+          </span>
+        </div>
+        <span className="text-body font-medium text-[var(--color-primary)]">
+          Rachel M.
+        </span>
+        <span className="text-caption text-[var(--color-tertiary)]">
+          Program Lead, Ford Motor Company &middot; Chicago
+        </span>
+      </figcaption>
+    </figure>
   );
 }
 

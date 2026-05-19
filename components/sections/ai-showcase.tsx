@@ -89,16 +89,25 @@ export function AiShowcase() {
         {/* LEFT: prompt + typewriter response */}
         <div className="flex flex-col gap-8">
           <div className="flex flex-col gap-6">
-            <span className="text-micro text-[var(--color-tertiary)]">
-              AI that works
+            <span className="inline-flex items-center gap-2 self-start">
+              <span className="text-micro text-[var(--color-tertiary)]">
+                AI that works
+              </span>
+              <span
+                className="rounded-full border border-[var(--color-warning)]/40 bg-[var(--color-warning)]/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.18em] text-[var(--color-warning)]"
+                aria-label="This is a demo agent, not a live LLM"
+              >
+                Demo
+              </span>
             </span>
             <h2 className="text-display-m max-w-[16ch]">
               <SplitText text={"Try our analysis\nagent yourself."} />
             </h2>
             <p className="text-body-l max-w-[520px] text-[var(--color-secondary)]">
-              Production agents wired into your stack, not chat toys. Ask one
-              a question below and watch it think, evidence its answer, and
-              show its sources.
+              The agent below is a scripted demo of how a production
+              engagement feels: prompt in, status stream, evidenced answer,
+              cited sources. Real engagements run against your data with
+              audit logs and evaluations.
             </p>
           </div>
 

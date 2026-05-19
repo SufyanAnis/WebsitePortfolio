@@ -210,19 +210,50 @@ function ContactForm() {
     error: string | null;
   }>({ submitting: false, sent: false, error: null });
 
-  function onSubmit(e: FormEvent<HTMLFormElement>) {
+  async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
-    const email = String(fd.get("email") ?? "");
-    if (!email.includes("@")) {
-      setState({ submitting: false, sent: false, error: "Please enter a valid email." });
+    const payload = {
+      name: String(fd.get("name") ?? ""),
+      company: String(fd.get("company") ?? ""),
+      email: String(fd.get("email") ?? ""),
+      projectType: String(fd.get("projectType") ?? ""),
+      budget: String(fd.get("budget") ?? ""),
+      timeline: String(fd.get("timeline") ?? ""),
+      message: String(fd.get("message") ?? ""),
+    };
+    if (!payload.email.includes("@") || !payload.name.trim()) {
+      setState({
+        submitting: false,
+        sent: false,
+        error: "Please enter your name and a valid email.",
+      });
       return;
     }
     setState({ submitting: true, sent: false, error: null });
-    // TODO: replace with a POST to /api/lead once the route is built.
-    window.setTimeout(() => {
+    try {
+      const res = await fetch("/api/lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const data: { error?: string } = await res.json().catch(() => ({}));
+        setState({
+          submitting: false,
+          sent: false,
+          error: data.error ?? "Could not send right now. Please email directly.",
+        });
+        return;
+      }
       setState({ submitting: false, sent: true, error: null });
-    }, 700);
+    } catch {
+      setState({
+        submitting: false,
+        sent: false,
+        error: "Network error. Please try again or email directly.",
+      });
+    }
   }
 
   if (state.sent) {

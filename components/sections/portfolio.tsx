@@ -57,19 +57,12 @@ export function Portfolio() {
                             {item.title}
                           </span>
                           <span className="text-[10px] text-[var(--color-tertiary)]/70">
-                            Live preview, auto-cycling
+                            Animated UI preview
                           </span>
                         </div>
                         <span className="inline-flex items-center gap-1.5">
-                          <span className="relative inline-flex">
-                            <span className="size-1.5 rounded-full bg-[var(--color-success)]" />
-                            <span
-                              aria-hidden
-                              className="absolute inset-0 size-1.5 animate-ping rounded-full bg-[var(--color-success)] opacity-60"
-                            />
-                          </span>
                           <span className="text-[10px] uppercase tracking-[0.18em] text-[var(--color-tertiary)]">
-                            Live
+                            Preview
                           </span>
                         </span>
                       </div>

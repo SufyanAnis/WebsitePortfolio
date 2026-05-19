@@ -29,7 +29,7 @@ const INITIAL: Record<Column, Ticket[]> = {
   Backlog: [
     { id: "SWL-118", title: "Settings dashboard", priority: "med" },
     { id: "SWL-121", title: "Stripe refund webhooks", priority: "high" },
-    { id: "SWL-124", title: "Localise marketing (DE)", priority: "low" },
+    { id: "SWL-124", title: "Localize marketing (DE)", priority: "low" },
   ],
   "In Progress": [
     { id: "SWL-112", title: "Presence cursors", priority: "high" },

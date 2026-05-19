@@ -177,8 +177,10 @@ export function AiShowcase() {
           </div>
 
           <p className="text-[11px] text-[var(--color-tertiary)]">
-            Sample agent. Real engagements ship with audit logs, evaluations,
-            and your own data sources.
+            Demo agent. Output is scripted to illustrate the
+            sources-and-status flow; real engagements ship with audit
+            logs, evaluations, and your own data sources. The figures on
+            the right are target SLOs we engineer to, not live telemetry.
           </p>
         </div>
 

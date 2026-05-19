@@ -785,10 +785,13 @@ const REGISTRY: Record<CaseKind, () => React.ReactElement> = {
 export function CaseVisual({ kind }: { kind: CaseKind }) {
   const Component = REGISTRY[kind];
   return (
-    <div className="absolute inset-0 overflow-hidden">
+    /* aria-hidden: these are decorative product surface mockups.
+       Screen readers should announce the case study via the parent
+       card's title/blurb, not the mockup's decorative microcopy
+       (URLs, ticket IDs, $48.00, +24.8% etc). Per QA #20. */
+    <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
       <Component />
       <div
-        aria-hidden
         className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3"
         style={{
           background:

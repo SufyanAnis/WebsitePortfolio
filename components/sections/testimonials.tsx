@@ -1,40 +1,43 @@
 "use client";
 
-import { motion, useReducedMotion } from "motion/react";
+import { motion } from "motion/react";
 import { GripHorizontal } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { SplitText } from "@/components/animations/split-text";
 import { siteConfig } from "@/lib/site-config";
 
 /**
- * Capabilities — formerly Testimonials. Per QA report, the
+ * Capabilities — formerly Testimonials. Per QA report v1, the
  * fabricated testimonials section was undermining credibility.
  * Reframed as forward-looking capability statements ("What we
  * deliver") rather than unverifiable third-party praise.
  *
- * Layout is the same draggable horizontal carousel so the visual
- * rhythm of the page is preserved.
+ * Per QA report v2 #15, the previous draggable-only implementation
+ * was inaccessible to keyboard and screen-reader users. This pass
+ * swaps the framer-motion drag carousel for a native horizontal
+ * scroll container with scroll-snap and a custom keyboard handler
+ * that scrolls one card per arrow keypress. Native scroll gives us
+ * touch swipe, mouse wheel (shift+wheel), and screen reader
+ * navigation for free.
  */
 export function Testimonials() {
-  const wrapRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const [constraint, setConstraint] = useState({ left: 0, right: 0 });
-  const reduced = useReducedMotion();
+  const scrollerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    function measure() {
-      if (!wrapRef.current || !trackRef.current) return;
-      const trackWidth = trackRef.current.scrollWidth;
-      const wrapWidth = wrapRef.current.clientWidth;
-      setConstraint({ left: Math.min(0, wrapWidth - trackWidth), right: 0 });
-    }
-    measure();
-    window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
-  }, []);
+  function onKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+    e.preventDefault();
+    const el = scrollerRef.current;
+    if (!el) return;
+    // Each card is 320 px wide on mobile, 360 px on lg, with a 20 px
+    // gap. Scrolling by the first card's width keeps the step
+    // visually predictable across breakpoints.
+    const firstCard = el.querySelector<HTMLElement>("[data-card]");
+    const step = firstCard ? firstCard.offsetWidth + 20 : 340;
+    el.scrollBy({ left: e.key === "ArrowRight" ? step : -step, behavior: "smooth" });
+  }
 
   return (
-    <section className="relative py-32 lg:py-44">
+    <section className="relative py-32 lg:py-44" aria-label="Six commitments">
       <div className="mx-auto max-w-[var(--container-full)] px-6 lg:px-12">
         <div className="mb-12 flex flex-col gap-6 lg:mb-16 lg:flex-row lg:items-end lg:justify-between">
           <div className="flex flex-col gap-6">
@@ -46,30 +49,25 @@ export function Testimonials() {
             </h2>
           </div>
           <span className="inline-flex items-center gap-2 text-caption text-[var(--color-tertiary)]">
-            <GripHorizontal size={14} />
-            Drag to scrub
+            <GripHorizontal size={14} aria-hidden />
+            Drag, swipe, or use arrow keys
           </span>
         </div>
       </div>
 
       <div
-        ref={wrapRef}
-        className="relative mask-edge-x overflow-hidden"
+        ref={scrollerRef}
+        tabIndex={0}
+        role="region"
+        aria-label="Six commitments, horizontally scrollable"
+        onKeyDown={onKeyDown}
+        className="mask-edge-x flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-2 outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]/40 lg:gap-5 lg:px-12"
+        style={{ scrollbarWidth: "none" }}
         data-cursor="drag"
       >
-        <motion.div
-          ref={trackRef}
-          className="flex cursor-grab gap-4 px-6 pb-2 lg:gap-5 lg:px-12"
-          drag={reduced ? false : "x"}
-          dragConstraints={constraint}
-          dragElastic={0.06}
-          dragTransition={{ bounceStiffness: 220, bounceDamping: 26 }}
-          whileTap={{ cursor: "grabbing" }}
-        >
-          {siteConfig.capabilities.map((c, i) => (
-            <CapabilityCard key={c.headline} index={i} {...c} />
-          ))}
-        </motion.div>
+        {siteConfig.capabilities.map((c, i) => (
+          <CapabilityCard key={c.headline} index={i} {...c} />
+        ))}
       </div>
     </section>
   );
@@ -90,7 +88,8 @@ function CapabilityCard({
 }: CapabilityCardProps) {
   return (
     <motion.article
-      className="flex w-[300px] shrink-0 flex-col justify-between rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-elevated)] p-6 lg:w-[340px]"
+      data-card
+      className="flex w-[300px] shrink-0 snap-start flex-col justify-between rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-elevated)] p-6 lg:w-[340px]"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-10%" }}

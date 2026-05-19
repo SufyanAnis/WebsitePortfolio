@@ -146,12 +146,13 @@ export function Hero() {
           className="flex max-w-[600px] flex-col gap-6"
         >
           <p className="text-body-l text-[var(--color-secondary)]">
-            A studio of engineers and designers shipping web, mobile, and AI
-            products for teams that take quality seriously.
+            Led by {siteConfig.brand.founder}, with a tight network of
+            senior engineers and designers who join per engagement. Web,
+            mobile, and AI products for teams that take quality seriously.
           </p>
           <div className="flex flex-wrap items-center gap-3">
             <Button href="#contact" variant="primary" icon="arrow">
-              Start a Project
+              Start a project
             </Button>
             <Button href="#portfolio" variant="ghost" icon="play">
               See our work

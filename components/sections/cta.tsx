@@ -315,9 +315,14 @@ function ContactForm() {
       )}
 
       <div className="flex flex-col items-stretch gap-3 md:col-span-2 md:flex-row md:items-center md:justify-between">
-        <span className="text-[11px] text-[var(--color-tertiary)]">
-          Your details stay private. No newsletters, ever.
-        </span>
+        <div className="flex flex-col gap-1">
+          <span className="text-[11px] text-[var(--color-tertiary)]">
+            Your details stay private. No newsletters, ever.
+          </span>
+          <span className="text-[11px] text-[var(--color-tertiary)]/80">
+            Written reply within 12 hours on weekdays.
+          </span>
+        </div>
         <button
           type="submit"
           disabled={state.submitting}

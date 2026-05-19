@@ -46,6 +46,12 @@ export const siteConfig = {
   /**
    * Trust bar — stack we ship with. Order matters for marquee balance.
    */
+  /**
+   * Tech stack the studio ships with. Mixes the modern product
+   * tools (top of list) with the enterprise specialisms (SAP, Jira,
+   * Apigee, Oracle RightNow) so the marquee accurately reflects
+   * what we work in, not just the visible-on-Twitter subset.
+   */
   trustStack: [
     "React",
     "Next.js",
@@ -61,6 +67,11 @@ export const siteConfig = {
     "Tailwind",
     "MongoDB",
     "PostgreSQL",
+    "SAP ABAP",
+    "S/4HANA",
+    "Apigee",
+    "Jira",
+    "Oracle RightNow",
   ],
 
   /**
@@ -140,8 +151,8 @@ export const siteConfig = {
   stats: [
     { value: 142, suffix: "+", label: "Projects shipped", decimals: 0 },
     { value: 47, suffix: "+", label: "Active clients", decimals: 0 },
-    { value: 4.9, suffix: "/5", label: "Average rating", decimals: 1 },
-    { value: 12, suffix: "h", label: "Avg response", decimals: 0 },
+    { value: 4.9, suffix: " / 5", label: "Average rating", decimals: 1 },
+    { value: 12, suffix: " hr", label: "Avg response", decimals: 0 },
   ],
 
   /**
@@ -172,7 +183,7 @@ export const siteConfig = {
       title: "Shopify Headless Build",
       client: "DTC Skincare, IE",
       blurb:
-        "Headless Hydrogen storefront with sub-1s LCP, full motion and live cart.",
+        "Headless Hydrogen storefront with sub-2s LCP, full motion and live cart.",
       tags: ["Shopify", "Hydrogen", "Edge"],
       span: "col-span-12 sm:col-span-6 lg:col-span-5",
     },
@@ -191,7 +202,7 @@ export const siteConfig = {
       kind: "fintech" as const,
       title: "Fintech Onboarding",
       client: "Regulated Fintech, US",
-      blurb: "KYC-aware onboarding cutting drop-off by 41%.",
+      blurb: "KYC-aware onboarding designed to cut sign-up drop-off.",
       tags: ["KYC", "Stripe", "Audit"],
       span: "col-span-12 sm:col-span-6 lg:col-span-4",
     },
@@ -321,11 +332,11 @@ export const siteConfig = {
   ],
 
   aiShowcase: {
-    placeholder: "Analyze our Q3 revenue and surface the three biggest risks",
+    placeholder: "Analyze Q3 revenue risks",
     samplePrompts: [
-      "Analyze our Q3 revenue and surface the three biggest risks",
-      "Summarize churn drivers in the last 90 days",
-      "Which features correlate with retention?",
+      "Analyze Q3 revenue risks",
+      "Summarize 90-day churn",
+      "Features that drive retention",
     ],
     sequence: [
       { kind: "status" as const, text: "Connecting to data sources..." },
@@ -361,10 +372,16 @@ export const siteConfig = {
         footnote: "Confidence 92% · 4 sources · 1.4s",
       },
     ],
+    /**
+     * Target SLOs we engineer to on production AI engagements.
+     * These are the operational standards the work is held to, not
+     * a live aggregate telemetry feed, per QA recommendation #4.
+     */
+    statsCaption: "Target SLOs we engineer to on production AI work",
     stats: [
-      { label: "Processing", value: "1.2M tokens / day" },
-      { label: "Uptime", value: "99.7%" },
-      { label: "p95 response", value: "Sub-200ms" },
+      { label: "Throughput", value: "1M+ tokens / day" },
+      { label: "Uptime target", value: "99.7%" },
+      { label: "p95 target", value: "Sub-200 ms" },
     ],
   },
 

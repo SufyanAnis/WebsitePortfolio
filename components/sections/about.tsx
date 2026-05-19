@@ -58,11 +58,12 @@ export function About() {
                 </span>
               </div>
               <p className="text-body-l max-w-[58ch] text-[var(--color-secondary)]">
-                {siteConfig.brand.name} is a small studio led from{" "}
-                {siteConfig.brand.city}. We take on a handful of engagements
-                each quarter, work end-to-end across design, product
-                engineering, AI, and enterprise systems, and stay on call
-                for two weeks after every launch.
+                {siteConfig.brand.name} is led by {siteConfig.brand.founder}{" "}
+                from {siteConfig.brand.city}, with a tight network of senior
+                engineers and designers who join per engagement. The studio
+                takes on a handful of projects each quarter, works end-to-end
+                across design, product engineering, AI, and enterprise systems,
+                and stays on call for two weeks after every launch.
               </p>
               <p className="text-body max-w-[58ch] text-[var(--color-tertiary)]">
                 Specialist depth in SAP ABAP, Apigee, Jira, and Oracle

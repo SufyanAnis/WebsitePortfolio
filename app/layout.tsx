@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Syne, DM_Sans } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { LenisProvider } from "@/lib/lenis-provider";
 import { CustomCursor } from "@/components/animations/custom-cursor";
 import { siteConfig } from "@/lib/site-config";
@@ -169,6 +170,7 @@ export default function RootLayout({
         <StructuredData />
         <LenisProvider>{children}</LenisProvider>
         <CustomCursor />
+        <Analytics />
       </body>
     </html>
   );

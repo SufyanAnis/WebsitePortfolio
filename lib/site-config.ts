@@ -10,7 +10,13 @@
  * and fill in the actual handles.
  */
 
-const env = process.env;
+/**
+ * NEXT_PUBLIC_* env vars MUST be referenced as `process.env.NEXT_PUBLIC_X`
+ * literally so Next.js's webpack DefinePlugin can inline the value at
+ * build time. Aliasing (e.g. `const env = process.env; env.NEXT_PUBLIC_X`)
+ * defeats the static replacement and crashes the browser bundle because
+ * `process` is undefined in the client runtime.
+ */
 
 /** Compute next-available quarter from today. Used by hero badge + CTA. */
 export function nextAvailableQuarter(): string {
@@ -27,8 +33,8 @@ export const siteConfig = {
     name: "Swift Labs",
     tagline: "Digital products, engineered.",
     /** Used in About + meta. Pulled from env so it's swappable. */
-    founder: env.NEXT_PUBLIC_FOUNDER_NAME || "Sufyan Anis",
-    city: env.NEXT_PUBLIC_CITY || "Karachi, Pakistan",
+    founder: process.env.NEXT_PUBLIC_FOUNDER_NAME || "Sufyan Anis",
+    city: process.env.NEXT_PUBLIC_CITY || "Karachi, Pakistan",
   },
 
   /**
@@ -358,10 +364,10 @@ export const siteConfig = {
    * ship. Channels with empty env values are hidden at render time.
    */
   contact: {
-    email: env.NEXT_PUBLIC_CONTACT_EMAIL || "",
-    calendly: env.NEXT_PUBLIC_CALENDLY_URL || "",
-    whatsapp: env.NEXT_PUBLIC_WHATSAPP_NUMBER || "",
-    whatsappHref: env.NEXT_PUBLIC_WHATSAPP_HREF || "",
+    email: process.env.NEXT_PUBLIC_CONTACT_EMAIL || "",
+    calendly: process.env.NEXT_PUBLIC_CALENDLY_URL || "",
+    whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "",
+    whatsappHref: process.env.NEXT_PUBLIC_WHATSAPP_HREF || "",
   },
 
   /**
@@ -372,29 +378,29 @@ export const siteConfig = {
     {
       key: "linkedin",
       label: "LinkedIn",
-      href: env.NEXT_PUBLIC_LINKEDIN_URL || "",
+      href: process.env.NEXT_PUBLIC_LINKEDIN_URL || "",
     },
     {
       key: "instagram",
       label: "Instagram",
-      href: env.NEXT_PUBLIC_INSTAGRAM_URL || "",
+      href: process.env.NEXT_PUBLIC_INSTAGRAM_URL || "",
     },
-    { key: "x", label: "X", href: env.NEXT_PUBLIC_X_URL || "" },
-    { key: "github", label: "GitHub", href: env.NEXT_PUBLIC_GITHUB_URL || "" },
+    { key: "x", label: "X", href: process.env.NEXT_PUBLIC_X_URL || "" },
+    { key: "github", label: "GitHub", href: process.env.NEXT_PUBLIC_GITHUB_URL || "" },
     {
       key: "dribbble",
       label: "Dribbble",
-      href: env.NEXT_PUBLIC_DRIBBBLE_URL || "",
+      href: process.env.NEXT_PUBLIC_DRIBBBLE_URL || "",
     },
     {
       key: "behance",
       label: "Behance",
-      href: env.NEXT_PUBLIC_BEHANCE_URL || "",
+      href: process.env.NEXT_PUBLIC_BEHANCE_URL || "",
     },
     {
       key: "youtube",
       label: "YouTube",
-      href: env.NEXT_PUBLIC_YOUTUBE_URL || "",
+      href: process.env.NEXT_PUBLIC_YOUTUBE_URL || "",
     },
   ],
 

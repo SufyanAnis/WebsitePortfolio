@@ -43,54 +43,60 @@ export function Services() {
           </p>
         </div>
 
-        <ScrollReveal stagger={0.08} className="contents">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {siteConfig.services.map((s) => (
-              <motion.article
-                key={s.id}
-                variants={revealChild}
-                whileHover={{ y: -8 }}
-                transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
-                className={`group relative flex min-h-[320px] flex-col justify-between overflow-hidden rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-elevated)] p-6 transition-colors duration-300 hover:border-[var(--color-accent)]/40 ${s.span}`}
-              >
-                <div
-                  aria-hidden
-                  className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-                  style={{
-                    background:
-                      "radial-gradient(circle at 0% 0%, rgba(26,107,255,0.10), transparent 60%)",
-                  }}
-                />
+        {/* ScrollReveal IS the grid. Don't wrap a plain <div> inside
+            and give the motion wrapper `display: contents` — that
+            removes its layout box, IntersectionObserver can't observe
+            it, `whileInView` never fires, and the cards stay locked
+            at opacity 0. */}
+        <ScrollReveal
+          stagger={0.08}
+          className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
+        >
+          {siteConfig.services.map((s) => (
+            <motion.article
+              key={s.id}
+              variants={revealChild}
+              whileHover={{ y: -8 }}
+              transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+              className={`group relative flex min-h-[320px] flex-col justify-between overflow-hidden rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-elevated)] p-6 transition-colors duration-300 hover:border-[var(--color-accent)]/40 ${s.span}`}
+            >
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                style={{
+                  background:
+                    "radial-gradient(circle at 0% 0%, rgba(26,107,255,0.10), transparent 60%)",
+                }}
+              />
 
-                <div className="relative flex items-start justify-between">
-                  <span className="inline-flex size-12 items-center justify-center rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-base)] text-[var(--color-primary)] transition-colors duration-300 group-hover:text-[var(--color-accent)]">
-                    <ServiceIcon name={s.iconKey} active={iconsActive} />
+              <div className="relative flex items-start justify-between">
+                <span className="inline-flex size-12 items-center justify-center rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-base)] text-[var(--color-primary)] transition-colors duration-300 group-hover:text-[var(--color-accent)]">
+                  <ServiceIcon name={s.iconKey} active={iconsActive} />
+                </span>
+                <span className="font-display text-[2.5rem] font-semibold leading-none text-[var(--color-tertiary)]/40 transition-colors duration-300 group-hover:text-[var(--color-tertiary)]">
+                  {s.id}
+                </span>
+              </div>
+
+              <div className="relative mt-6 flex flex-col gap-3">
+                <h3 className="text-heading">{s.title}</h3>
+                <p className="text-body text-[var(--color-secondary)]">
+                  {s.description}
+                </p>
+              </div>
+
+              <div className="relative mt-6 flex flex-wrap gap-1.5">
+                {s.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-full border border-[var(--color-border-subtle)] bg-[var(--color-base)]/60 px-2.5 py-0.5 text-[11px] text-[var(--color-tertiary)]"
+                  >
+                    {tag}
                   </span>
-                  <span className="font-display text-[2.5rem] font-semibold leading-none text-[var(--color-tertiary)]/40 transition-colors duration-300 group-hover:text-[var(--color-tertiary)]">
-                    {s.id}
-                  </span>
-                </div>
-
-                <div className="relative mt-6 flex flex-col gap-3">
-                  <h3 className="text-heading">{s.title}</h3>
-                  <p className="text-body text-[var(--color-secondary)]">
-                    {s.description}
-                  </p>
-                </div>
-
-                <div className="relative mt-6 flex flex-wrap gap-1.5">
-                  {s.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="rounded-full border border-[var(--color-border-subtle)] bg-[var(--color-base)]/60 px-2.5 py-0.5 text-[11px] text-[var(--color-tertiary)]"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </motion.article>
-            ))}
-          </div>
+                ))}
+              </div>
+            </motion.article>
+          ))}
         </ScrollReveal>
       </div>
     </section>
